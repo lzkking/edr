@@ -3,7 +3,8 @@ module github.com/lzkking/edr/agent-center
 go 1.24.6
 
 require (
-	github.com/lzkking/edr/edrproto v0.0.0-20250825081949-ee24e26255fd // indirect
+	github.com/lzkking/edr/edrproto v0.0.0-20250825082515-513d94d6c578 // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	golang.org/x/net v0.41.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.26.0 // indirect
