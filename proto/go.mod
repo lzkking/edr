@@ -1,4 +1,4 @@
-module proto
+module github.com/lzkking/edr/proto
 
 go 1.24.6
 
