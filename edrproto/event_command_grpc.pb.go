@@ -19,15 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Service_UploadEvent_FullMethodName = "/event.Service/UploadEvent"
-	Service_Transfer_FullMethodName    = "/event.Service/Transfer"
+	Service_Transfer_FullMethodName = "/event.Service/Transfer"
 )
 
 // ServiceClient is the client API for Service service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServiceClient interface {
-	UploadEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Command, error)
 	Transfer(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[Event, Command], error)
 }
 
@@ -37,16 +35,6 @@ type serviceClient struct {
 
 func NewServiceClient(cc grpc.ClientConnInterface) ServiceClient {
 	return &serviceClient{cc}
-}
-
-func (c *serviceClient) UploadEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Command, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Command)
-	err := c.cc.Invoke(ctx, Service_UploadEvent_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *serviceClient) Transfer(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[Event, Command], error) {
@@ -66,7 +54,6 @@ type Service_TransferClient = grpc.BidiStreamingClient[Event, Command]
 // All implementations must embed UnimplementedServiceServer
 // for forward compatibility.
 type ServiceServer interface {
-	UploadEvent(context.Context, *Event) (*Command, error)
 	Transfer(grpc.BidiStreamingServer[Event, Command]) error
 	mustEmbedUnimplementedServiceServer()
 }
@@ -78,9 +65,6 @@ type ServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedServiceServer struct{}
 
-func (UnimplementedServiceServer) UploadEvent(context.Context, *Event) (*Command, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UploadEvent not implemented")
-}
 func (UnimplementedServiceServer) Transfer(grpc.BidiStreamingServer[Event, Command]) error {
 	return status.Errorf(codes.Unimplemented, "method Transfer not implemented")
 }
@@ -105,24 +89,6 @@ func RegisterServiceServer(s grpc.ServiceRegistrar, srv ServiceServer) {
 	s.RegisterService(&Service_ServiceDesc, srv)
 }
 
-func _Service_UploadEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Event)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ServiceServer).UploadEvent(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Service_UploadEvent_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).UploadEvent(ctx, req.(*Event))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Service_Transfer_Handler(srv interface{}, stream grpc.ServerStream) error {
 	return srv.(ServiceServer).Transfer(&grpc.GenericServerStream[Event, Command]{ServerStream: stream})
 }
@@ -136,12 +102,7 @@ type Service_TransferServer = grpc.BidiStreamingServer[Event, Command]
 var Service_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "event.Service",
 	HandlerType: (*ServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "UploadEvent",
-			Handler:    _Service_UploadEvent_Handler,
-		},
-	},
+	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "Transfer",

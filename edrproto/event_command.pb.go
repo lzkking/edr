@@ -246,9 +246,8 @@ const file_event_command_proto_rawDesc = "" +
 	"\x03url\x18\x01 \x03(\tR\x03url\x12\x12\n" +
 	"\x04sign\x18\x02 \x01(\tR\x04sign\x12\x18\n" +
 	"\aversion\x18\x03 \x01(\tR\aversion\x12\x1b\n" +
-	"\tfile_name\x18\x04 \x01(\tR\bfileName2d\n" +
-	"\aService\x12+\n" +
-	"\vUploadEvent\x12\f.event.Event\x1a\x0e.event.Command\x12,\n" +
+	"\tfile_name\x18\x04 \x01(\tR\bfileName27\n" +
+	"\aService\x12,\n" +
 	"\bTransfer\x12\f.event.Event\x1a\x0e.event.Command(\x010\x01B\x1eZ\x1cgithub.com/lzkking/edr/protob\x06proto3"
 
 var (
@@ -271,12 +270,10 @@ var file_event_command_proto_goTypes = []any{
 }
 var file_event_command_proto_depIdxs = []int32{
 	2, // 0: event.Command.file_info:type_name -> event.FileInfo
-	0, // 1: event.Service.UploadEvent:input_type -> event.Event
-	0, // 2: event.Service.Transfer:input_type -> event.Event
-	1, // 3: event.Service.UploadEvent:output_type -> event.Command
-	1, // 4: event.Service.Transfer:output_type -> event.Command
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
+	0, // 1: event.Service.Transfer:input_type -> event.Event
+	1, // 2: event.Service.Transfer:output_type -> event.Command
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name

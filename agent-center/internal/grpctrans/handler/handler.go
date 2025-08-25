@@ -2,14 +2,16 @@ package handler
 
 import (
 	"context"
-	"github.com/lzkking/edr/edrproto"
+	pb "github.com/lzkking/edr/edrproto"
 )
 
 type TransferHandler struct {
-	edrproto.UnimplementedServiceServer
+	pb.UnimplementedServiceServer
 }
 
-func (t *TransferHandler) UploadEvent(ctx context.Context, req *edrproto.Event) (*edrproto.Command, error) {
+func (t *TransferHandler) UploadEvent(ctx context.Context, req *pb.Event) (*pb.Command, error) {
 
 	return nil, nil
 }
+
+func (t *TransferHandler) Transfer(stream pb.Service_TransferServer)

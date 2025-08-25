@@ -26,6 +26,5 @@ message FileInfo {
 }
 
 service Service {
-  rpc UploadEvent(Event) returns (Command);
   rpc Transfer(stream Event) returns (stream Command);
 }
