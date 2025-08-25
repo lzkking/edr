@@ -4,7 +4,7 @@
 // 	protoc        v4.25.3
 // source: event_command.proto
 
-package proto
+package edrproto
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
