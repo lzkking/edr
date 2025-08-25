@@ -1,3 +1,30 @@
 syntax = "proto3";
 
-package
+package event;
+
+option go_package =  "github.com/lzkking/edr/proto";
+
+message Event {
+  string event_id = 1;
+  string event_type = 2;
+  int64 timestamp = 3;
+  bytes data = 4;
+}
+
+message Command {
+  string event_id = 1;
+  string event_type = 2;
+  int64  timestamp = 3;
+  FileInfo file_info = 4;
+}
+
+message FileInfo {
+  repeated string url = 1;
+  string sign = 2;
+  string version = 3;
+  string file_name =4;
+}
+
+service Service {
+  rpc UploadEvent(Event) returns (Command);
+}
