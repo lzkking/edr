@@ -5,17 +5,19 @@ package event;
 option go_package =  "github.com/lzkking/edr/proto";
 
 message Event {
-  string event_id = 1;
-  string event_type = 2;
-  int64 timestamp = 3;
-  bytes data = 4;
+  string agent_id = 1;
+  string event_id = 2;
+  string event_type = 3;
+  int64 timestamp = 4;
+  bytes data = 5;
 }
 
 message Command {
-  string event_id = 1;
-  string event_type = 2;
-  int64  timestamp = 3;
-  FileInfo file_info = 4;
+  string agent_id = 1;
+  string event_id = 2;
+  string event_type = 3;
+  int64  timestamp = 4;
+  FileInfo file_info = 5;
 }
 
 message FileInfo {
