@@ -103,7 +103,8 @@ type Command struct {
 	EventId       string                 `protobuf:"bytes,2,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
 	EventType     string                 `protobuf:"bytes,3,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
 	Timestamp     int64                  `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	FileInfo      *FileInfo              `protobuf:"bytes,5,opt,name=file_info,json=fileInfo,proto3" json:"file_info,omitempty"`
+	Data          []byte                 `protobuf:"bytes,5,opt,name=data,proto3" json:"data,omitempty"`
+	FileInfo      *FileInfo              `protobuf:"bytes,6,opt,name=file_info,json=fileInfo,proto3" json:"file_info,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -164,6 +165,13 @@ func (x *Command) GetTimestamp() int64 {
 		return x.Timestamp
 	}
 	return 0
+}
+
+func (x *Command) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
 }
 
 func (x *Command) GetFileInfo() *FileInfo {
@@ -252,14 +260,15 @@ const file_event_command_proto_rawDesc = "" +
 	"\n" +
 	"event_type\x18\x03 \x01(\tR\teventType\x12\x1c\n" +
 	"\ttimestamp\x18\x04 \x01(\x03R\ttimestamp\x12\x12\n" +
-	"\x04data\x18\x05 \x01(\fR\x04data\"\xaa\x01\n" +
+	"\x04data\x18\x05 \x01(\fR\x04data\"\xbe\x01\n" +
 	"\aCommand\x12\x19\n" +
 	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x19\n" +
 	"\bevent_id\x18\x02 \x01(\tR\aeventId\x12\x1d\n" +
 	"\n" +
 	"event_type\x18\x03 \x01(\tR\teventType\x12\x1c\n" +
-	"\ttimestamp\x18\x04 \x01(\x03R\ttimestamp\x12,\n" +
-	"\tfile_info\x18\x05 \x01(\v2\x0f.event.FileInfoR\bfileInfo\"g\n" +
+	"\ttimestamp\x18\x04 \x01(\x03R\ttimestamp\x12\x12\n" +
+	"\x04data\x18\x05 \x01(\fR\x04data\x12,\n" +
+	"\tfile_info\x18\x06 \x01(\v2\x0f.event.FileInfoR\bfileInfo\"g\n" +
 	"\bFileInfo\x12\x10\n" +
 	"\x03url\x18\x01 \x03(\tR\x03url\x12\x12\n" +
 	"\x04sign\x18\x02 \x01(\tR\x04sign\x12\x18\n" +

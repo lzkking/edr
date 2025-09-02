@@ -3,9 +3,9 @@ package handler
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/lzkking/edr/agent-center/internal/grpctrans/pool"
 	pb "github.com/lzkking/edr/edrproto"
+	"go.uber.org/zap"
 
 	"google.golang.org/grpc/peer"
 	"time"
@@ -24,24 +24,26 @@ type TransferHandler struct {
 }
 
 func (t *TransferHandler) Transfer(stream pb.Service_TransferServer) error {
-	if GlobalPool.LoadToken() {
+	if !GlobalPool.LoadToken() {
+		zap.S().Warnf("超出agent-center可以处理的连接上限")
 		err := errors.New("out of max connection limit")
 		return err
 	}
-
 	defer func() {
 		GlobalPool.ReleaseToken()
 	}()
 
 	event, err := stream.Recv()
 	if err != nil {
+		zap.S().Warnf("接收agent的数据流失败")
 		return err
 	}
-
 	agentId := event.AgentId
+	zap.S().Infof("接收到%v的连接请求", agentId)
 
 	p, ok := peer.FromContext(stream.Context())
 	if !ok {
+		zap.S().Warnf("提取%v的连接信息失败", agentId)
 		return errors.New("peer error")
 	}
 	ctx, cancelButton := context.WithCancel(context.Background())
@@ -63,6 +65,7 @@ func (t *TransferHandler) Transfer(stream pb.Service_TransferServer) error {
 	}()
 
 	//	处理第一次的连接
+	handleRawData(event)
 
 	go recvData(stream, &conn)
 
@@ -83,7 +86,7 @@ func recvData(stream pb.Service_TransferServer, conn *pool.Connection) {
 			if err != nil {
 				return
 			}
-			fmt.Printf("recv data from %v", data.AgentId)
+			handleRawData(data)
 		}
 	}
 }
@@ -91,12 +94,16 @@ func recvData(stream pb.Service_TransferServer, conn *pool.Connection) {
 func sendData(stream pb.Service_TransferServer, conn *pool.Connection) {
 	defer conn.CancelFuc()
 	for {
-		time.Sleep(30)
+		time.Sleep(time.Second * 10)
 		select {
 		case <-conn.Ctx.Done():
 			return
 		default:
-			fmt.Println("发送命令")
+
 		}
 	}
+}
+
+func handleRawData(event *pb.Event) {
+
 }

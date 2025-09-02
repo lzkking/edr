@@ -17,7 +17,8 @@ message Command {
   string event_id = 2;
   string event_type = 3;
   int64  timestamp = 4;
-  FileInfo file_info = 5;
+  bytes data = 5;
+  FileInfo file_info = 6;
 }
 
 message FileInfo {

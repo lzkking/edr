@@ -2,6 +2,7 @@ package pool
 
 import (
 	"errors"
+	"github.com/lzkking/edr/agent-center/config"
 	"github.com/patrickmn/go-cache"
 )
 
@@ -11,12 +12,14 @@ type GlobalPool struct {
 }
 
 func NewGlobalPool() *GlobalPool {
+	grpcConfig := config.GetServerConfig()
+	connectLimit := grpcConfig.ConnectLimit
 	g := &GlobalPool{
 		connectPool: cache.New(-1, -1),
-		tokenChan:   make(chan bool, 256),
+		tokenChan:   make(chan bool, connectLimit),
 	}
 
-	for i := 0; i < 256; i++ {
+	for i := uint64(0); i < connectLimit; i++ {
 		g.tokenChan <- true
 	}
 
@@ -51,4 +54,14 @@ func (g *GlobalPool) LoadToken() bool {
 
 func (g *GlobalPool) ReleaseToken() {
 	g.tokenChan <- true
+}
+
+func (g *GlobalPool) GetAgentIdList() []string {
+	connMap := g.connectPool.Items()
+	agentIds := make([]string, 0)
+	for _, v := range connMap {
+		conn := v.Object.(*Connection)
+		agentIds = append(agentIds, conn.AgentId)
+	}
+	return agentIds
 }
