@@ -4,6 +4,8 @@ github.com/lzkking/edr/edrproto v0.0.0-20250825073525-bcf3ffe245cc h1:cJNYG7hBXx
 github.com/lzkking/edr/edrproto v0.0.0-20250825073525-bcf3ffe245cc/go.mod h1:z+xpMyn8NU1Szr+0sZXrgP84073PMx7Roa0sM1r34Ko=
 github.com/lzkking/edr/edrproto v0.0.0-20250825092737-64139a2541a9 h1:+XUw7W30yCeLDKWfUFRWnVNJLUTivZM/boZKbXJboAM=
 github.com/lzkking/edr/edrproto v0.0.0-20250825092737-64139a2541a9/go.mod h1:z+xpMyn8NU1Szr+0sZXrgP84073PMx7Roa0sM1r34Ko=
+github.com/lzkking/edr/edrproto v0.0.0-20250902011422-d845a087ffb8 h1:L3o2uzPULu9llc0FcpuqCy1MPoqSlKiyOr0iMiC4EvM=
+github.com/lzkking/edr/edrproto v0.0.0-20250902011422-d845a087ffb8/go.mod h1:z+xpMyn8NU1Szr+0sZXrgP84073PMx7Roa0sM1r34Ko=
 github.com/lzkking/edr/proto v0.0.0-20250825070834-583633b1b66a h1:wAGNLso31AA+jQ99+aqxE/ajTkVtF1u7zam02VWKZ98=
 github.com/lzkking/edr/proto v0.0.0-20250825070834-583633b1b66a/go.mod h1:5/AgVe990mmsKdvhQZiOJyN2bzB0fdloLaf7XVyk5ok=
 golang.org/x/net v0.41.0 h1:vBTly1HeNPEn3wtREYfy4GZ/NECgw2Cnl+nK6Nz3uvw=
