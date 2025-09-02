@@ -1,22 +1,23 @@
 package main
 
 import (
-	"context"
-	"github.com/lzkking/edr/agent/internal/transfer"
+	"github.com/lzkking/edr/agent/agent"
+	"github.com/lzkking/edr/agent/heartbeat"
+	"github.com/lzkking/edr/agent/transport"
 	"sync"
 )
 
 func main() {
 
-	ctx, cancel := context.WithCancel(context.Background())
-	wg := sync.WaitGroup{}
+	wg := &sync.WaitGroup{}
 
-	wg.Add(1)
+	wg.Add(2)
 
-	go transfer.Transfer(ctx, &wg)
+	go heartbeat.StartUp(agent.Context, wg)
+	go func() {
+		transport.StartUp(agent.Context, wg)
+		agent.Cancel()
+	}()
 
 	wg.Wait()
-
-	cancel()
-
 }

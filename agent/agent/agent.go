@@ -6,17 +6,14 @@ import (
 	"errors"
 	"github.com/google/uuid"
 	"os"
-	"path/filepath"
 )
 
 var (
-	Context, Cancel            = context.WithCancel(context.Background())
-	ID                         = ""
-	WorkingDirectory, _        = os.Getwd()
-	Product             string = "qifu-rock-agent"
-	Control                    = filepath.Join(WorkingDirectory, "qifu-rock-ctl")
-	// from linker
-	Version string
+	Context, Cancel = context.WithCancel(context.Background())
+	ID              = ""
+	WorkDirectory   = ""
+	Product         = "rock-agent"
+	Version         string
 )
 
 func fromUUIDFile(file string) (id uuid.UUID, err error) {
@@ -38,14 +35,8 @@ func fromIDFile(file string) (id []byte, err error) {
 	}
 	return
 }
+
 func init() {
-	if WorkingDirectory == "" {
-		WorkingDirectory = "/var/run"
-	}
-	var ok bool
-	if ID, ok = os.LookupEnv("SPECIFIED_AGENT_ID"); ok {
-		return
-	}
 	defer func() {
 		os.WriteFile("machine-id", []byte(ID), 0600)
 	}()

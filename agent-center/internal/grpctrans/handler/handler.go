@@ -119,6 +119,6 @@ func sendData(stream pb.Service_TransferServer, conn *pool.Connection) {
 	}
 }
 
-func handleRawData(event *pb.Event) {
+func handleRawData(event *pb.PackagedData) {
 
 }

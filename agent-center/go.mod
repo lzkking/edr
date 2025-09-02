@@ -17,7 +17,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/lzkking/edr/edrproto v0.0.0-20250902021452-e6be57580977 // indirect
+	github.com/lzkking/edr/edrproto v0.0.0-20250902024317-f9ebd6e0380f // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect

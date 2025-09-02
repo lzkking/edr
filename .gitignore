@@ -1,4 +1,5 @@
 .idea
 agent-center/agent-center
-agent/agent
+agent/agent-v1
+agent/machine-id
 agent-center/.agent-center
