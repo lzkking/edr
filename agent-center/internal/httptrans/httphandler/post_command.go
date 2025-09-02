@@ -1,7 +1,9 @@
 package httphandler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/lzkking/edr/agent-center/internal/grpctrans/handler"
 	pb "github.com/lzkking/edr/edrproto"
 	"go.uber.org/zap"
 	"net/http"
@@ -45,5 +47,47 @@ func PostCommand(c *gin.Context) {
 		})
 		return
 	}
-	pb.Command{}
+
+	msgCommand := pb.Command{
+		AgentCtrl: taskModel.Command.AgentCtrl,
+	}
+
+	if taskModel.Command.Config != nil {
+		msgCommand.Config = make([]*pb.ConfigItem, 0, len(taskModel.Command.Config))
+		for _, v := range taskModel.Command.Config {
+			tmp := &pb.ConfigItem{
+				Name:        v.Name,
+				Type:        v.Type,
+				Version:     v.Version,
+				SHA256:      v.SHA256,
+				Signature:   v.Signature,
+				DownloadURL: v.DownloadURL,
+				Detail:      v.Detail,
+			}
+
+			msgCommand.Config = append(msgCommand.Config, tmp)
+		}
+	}
+
+	if taskModel.Command.Task != nil {
+		task := pb.PluginTask{
+			DataType: taskModel.Command.Task.DataType,
+			Name:     taskModel.Command.Task.Name,
+			Data:     taskModel.Command.Task.Data,
+			Token:    taskModel.Command.Task.Token,
+		}
+		msgCommand.Task = &task
+	}
+
+	err = handler.GlobalPool.PostCommand(taskModel.AgentID, &msgCommand)
+	if err != nil {
+		zap.S().Errorf("向%v发送命令失败,命令:%v,错误原因:%v", taskModel.AgentID, taskModel, err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("向%v发送命令失败,命令:%v,错误原因:%v", taskModel.AgentID, taskModel, err),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "ok"})
+	return
 }

@@ -15,6 +15,7 @@ func Route(r *gin.Engine) {
 	r.GET("/agent_list", GetAgentList)
 	r.POST("/post_command", PostCommand)
 	r.POST("/have_agent", HaveAgent)
+	r.POST("/command", PostCommand)
 
 	return
 }
