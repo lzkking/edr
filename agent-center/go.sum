@@ -39,6 +39,8 @@ github.com/lzkking/edr/edrproto v0.0.0-20250825081949-ee24e26255fd h1:Czoy+Xyu8N
 github.com/lzkking/edr/edrproto v0.0.0-20250825081949-ee24e26255fd/go.mod h1:z+xpMyn8NU1Szr+0sZXrgP84073PMx7Roa0sM1r34Ko=
 github.com/lzkking/edr/edrproto v0.0.0-20250825082515-513d94d6c578 h1:V3Cmo7miufK91xy3YbwsKlHltDvRARNZcMhVkCYJq4U=
 github.com/lzkking/edr/edrproto v0.0.0-20250825082515-513d94d6c578/go.mod h1:z+xpMyn8NU1Szr+0sZXrgP84073PMx7Roa0sM1r34Ko=
+github.com/lzkking/edr/edrproto v0.0.0-20250825092737-64139a2541a9 h1:+XUw7W30yCeLDKWfUFRWnVNJLUTivZM/boZKbXJboAM=
+github.com/lzkking/edr/edrproto v0.0.0-20250825092737-64139a2541a9/go.mod h1:z+xpMyn8NU1Szr+0sZXrgP84073PMx7Roa0sM1r34Ko=
 github.com/lzkking/edr/proto v0.0.0-20250825070834-583633b1b66a h1:wAGNLso31AA+jQ99+aqxE/ajTkVtF1u7zam02VWKZ98=
 github.com/lzkking/edr/proto v0.0.0-20250825070834-583633b1b66a/go.mod h1:5/AgVe990mmsKdvhQZiOJyN2bzB0fdloLaf7XVyk5ok=
 github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWEY=

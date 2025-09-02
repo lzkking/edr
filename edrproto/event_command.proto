@@ -12,20 +12,32 @@ message Event {
   bytes data = 5;
 }
 
+//server --> agent
 message Command {
-  string agent_id = 1;
-  string event_id = 2;
-  string event_type = 3;
-  int64  timestamp = 4;
-  bytes data = 5;
-  FileInfo file_info = 6;
+  int32 AgentCtrl = 1; // Agent control command
+  PluginTask Task = 2; // Agent task
+  repeated ConfigItem Config = 3; // Plugin/Agent-host config
 }
 
-message FileInfo {
-  repeated string url = 1;
-  string sign = 2;
-  string version = 3;
-  string file_name =4;
+message PluginTask{
+  //DataType which used to uniquely identify different  format of Data
+  int32 DataType = 1;
+  // Plugin name, which used to uniquely identify different plugins
+  string Name = 2;
+  // Data transparently transmitted to the plugin
+  string Data = 3;
+  // The token is used for reconciliation
+  string Token = 4;
+}
+
+message ConfigItem{
+  string Name = 1;
+  string Type = 2;
+  string Version = 3;
+  string SHA256 = 4;
+  string Signature = 5;
+  repeated string DownloadURL = 6;
+  string Detail = 7;
 }
 
 service Service {

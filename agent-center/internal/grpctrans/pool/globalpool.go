@@ -3,7 +3,9 @@ package pool
 import (
 	"errors"
 	"github.com/lzkking/edr/agent-center/config"
+	pb "github.com/lzkking/edr/edrproto"
 	"github.com/patrickmn/go-cache"
+	"time"
 )
 
 type GlobalPool struct {
@@ -64,4 +66,39 @@ func (g *GlobalPool) GetAgentIdList() []string {
 		agentIds = append(agentIds, conn.AgentId)
 	}
 	return agentIds
+}
+
+func (g *GlobalPool) GetByID(agentID string) (*Connection, error) {
+	tmp, ok := g.connectPool.Get(agentID)
+	if !ok {
+		return nil, errors.New("agent id not found")
+	}
+	return tmp.(*Connection), nil
+}
+
+func (g *GlobalPool) PostCommand(agentID string, command *pb.Command) error {
+	conn, err := g.GetByID(agentID)
+	if err != nil {
+		return err
+	}
+
+	cmdToSend := &Command{
+		Command: command,
+		Error:   nil,
+		Ready:   make(chan bool, 1),
+	}
+
+	select {
+	case conn.Commands <- cmdToSend:
+	case <-time.After(2 * time.Second):
+		return errors.New("command list is full")
+	}
+
+	select {
+	case <-cmdToSend.Ready:
+		return cmdToSend.Error
+	case <-time.After(2 * time.Second):
+		return errors.New("the command have been sent,but get results timeout")
+
+	}
 }

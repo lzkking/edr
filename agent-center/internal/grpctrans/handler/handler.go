@@ -54,6 +54,7 @@ func (t *TransferHandler) Transfer(stream pb.Service_TransferServer) error {
 		AgentId:    agentId,
 		SourceAddr: p.Addr.String(),
 		CreateAt:   createAt,
+		Commands:   make(chan *pool.Command),
 	}
 
 	err = GlobalPool.Add(agentId, &conn)
@@ -94,12 +95,26 @@ func recvData(stream pb.Service_TransferServer, conn *pool.Connection) {
 func sendData(stream pb.Service_TransferServer, conn *pool.Connection) {
 	defer conn.CancelFuc()
 	for {
-		time.Sleep(time.Second * 10)
 		select {
 		case <-conn.Ctx.Done():
 			return
-		default:
+		case cmd := <-conn.Commands:
+			if cmd == nil {
+				zap.S().Infof("get close signal, now close the send direction,%v", conn.AgentId)
+				return
+			}
 
+			err := stream.Send(cmd.Command)
+			if err != nil {
+				zap.S().Errorf("send Command to %v error, command is %v, error is %v", conn.AgentId, cmd, err)
+				cmd.Error = err
+				close(cmd.Ready)
+				return
+			}
+
+			zap.S().Infof("send command to %v, command is %v", conn.AgentId, cmd)
+			cmd.Error = nil
+			close(cmd.Ready)
 		}
 	}
 }

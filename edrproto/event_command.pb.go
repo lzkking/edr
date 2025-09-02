@@ -97,14 +97,12 @@ func (x *Event) GetData() []byte {
 	return nil
 }
 
+// server --> agent
 type Command struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AgentId       string                 `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
-	EventId       string                 `protobuf:"bytes,2,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
-	EventType     string                 `protobuf:"bytes,3,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
-	Timestamp     int64                  `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	Data          []byte                 `protobuf:"bytes,5,opt,name=data,proto3" json:"data,omitempty"`
-	FileInfo      *FileInfo              `protobuf:"bytes,6,opt,name=file_info,json=fileInfo,proto3" json:"file_info,omitempty"`
+	AgentCtrl     int32                  `protobuf:"varint,1,opt,name=AgentCtrl,proto3" json:"AgentCtrl,omitempty"` // Agent control command
+	Task          *PluginTask            `protobuf:"bytes,2,opt,name=Task,proto3" json:"Task,omitempty"`            // Agent task
+	Config        []*ConfigItem          `protobuf:"bytes,3,rep,name=Config,proto3" json:"Config,omitempty"`        // Plugin/Agent-host config
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -139,72 +137,55 @@ func (*Command) Descriptor() ([]byte, []int) {
 	return file_event_command_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Command) GetAgentId() string {
+func (x *Command) GetAgentCtrl() int32 {
 	if x != nil {
-		return x.AgentId
-	}
-	return ""
-}
-
-func (x *Command) GetEventId() string {
-	if x != nil {
-		return x.EventId
-	}
-	return ""
-}
-
-func (x *Command) GetEventType() string {
-	if x != nil {
-		return x.EventType
-	}
-	return ""
-}
-
-func (x *Command) GetTimestamp() int64 {
-	if x != nil {
-		return x.Timestamp
+		return x.AgentCtrl
 	}
 	return 0
 }
 
-func (x *Command) GetData() []byte {
+func (x *Command) GetTask() *PluginTask {
 	if x != nil {
-		return x.Data
+		return x.Task
 	}
 	return nil
 }
 
-func (x *Command) GetFileInfo() *FileInfo {
+func (x *Command) GetConfig() []*ConfigItem {
 	if x != nil {
-		return x.FileInfo
+		return x.Config
 	}
 	return nil
 }
 
-type FileInfo struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Url           []string               `protobuf:"bytes,1,rep,name=url,proto3" json:"url,omitempty"`
-	Sign          string                 `protobuf:"bytes,2,opt,name=sign,proto3" json:"sign,omitempty"`
-	Version       string                 `protobuf:"bytes,3,opt,name=version,proto3" json:"version,omitempty"`
-	FileName      string                 `protobuf:"bytes,4,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+type PluginTask struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// DataType which used to uniquely identify different  format of Data
+	DataType int32 `protobuf:"varint,1,opt,name=DataType,proto3" json:"DataType,omitempty"`
+	// Plugin name, which used to uniquely identify different plugins
+	Name string `protobuf:"bytes,2,opt,name=Name,proto3" json:"Name,omitempty"`
+	// Data transparently transmitted to the plugin
+	Data string `protobuf:"bytes,3,opt,name=Data,proto3" json:"Data,omitempty"`
+	// The token is used for reconciliation
+	Token         string `protobuf:"bytes,4,opt,name=Token,proto3" json:"Token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *FileInfo) Reset() {
-	*x = FileInfo{}
+func (x *PluginTask) Reset() {
+	*x = PluginTask{}
 	mi := &file_event_command_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *FileInfo) String() string {
+func (x *PluginTask) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*FileInfo) ProtoMessage() {}
+func (*PluginTask) ProtoMessage() {}
 
-func (x *FileInfo) ProtoReflect() protoreflect.Message {
+func (x *PluginTask) ProtoReflect() protoreflect.Message {
 	mi := &file_event_command_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -216,35 +197,127 @@ func (x *FileInfo) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FileInfo.ProtoReflect.Descriptor instead.
-func (*FileInfo) Descriptor() ([]byte, []int) {
+// Deprecated: Use PluginTask.ProtoReflect.Descriptor instead.
+func (*PluginTask) Descriptor() ([]byte, []int) {
 	return file_event_command_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *FileInfo) GetUrl() []string {
+func (x *PluginTask) GetDataType() int32 {
 	if x != nil {
-		return x.Url
+		return x.DataType
 	}
-	return nil
+	return 0
 }
 
-func (x *FileInfo) GetSign() string {
+func (x *PluginTask) GetName() string {
 	if x != nil {
-		return x.Sign
+		return x.Name
 	}
 	return ""
 }
 
-func (x *FileInfo) GetVersion() string {
+func (x *PluginTask) GetData() string {
+	if x != nil {
+		return x.Data
+	}
+	return ""
+}
+
+func (x *PluginTask) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type ConfigItem struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
+	Type          string                 `protobuf:"bytes,2,opt,name=Type,proto3" json:"Type,omitempty"`
+	Version       string                 `protobuf:"bytes,3,opt,name=Version,proto3" json:"Version,omitempty"`
+	SHA256        string                 `protobuf:"bytes,4,opt,name=SHA256,proto3" json:"SHA256,omitempty"`
+	Signature     string                 `protobuf:"bytes,5,opt,name=Signature,proto3" json:"Signature,omitempty"`
+	DownloadURL   []string               `protobuf:"bytes,6,rep,name=DownloadURL,proto3" json:"DownloadURL,omitempty"`
+	Detail        string                 `protobuf:"bytes,7,opt,name=Detail,proto3" json:"Detail,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ConfigItem) Reset() {
+	*x = ConfigItem{}
+	mi := &file_event_command_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ConfigItem) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConfigItem) ProtoMessage() {}
+
+func (x *ConfigItem) ProtoReflect() protoreflect.Message {
+	mi := &file_event_command_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ConfigItem.ProtoReflect.Descriptor instead.
+func (*ConfigItem) Descriptor() ([]byte, []int) {
+	return file_event_command_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ConfigItem) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ConfigItem) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *ConfigItem) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *FileInfo) GetFileName() string {
+func (x *ConfigItem) GetSHA256() string {
 	if x != nil {
-		return x.FileName
+		return x.SHA256
+	}
+	return ""
+}
+
+func (x *ConfigItem) GetSignature() string {
+	if x != nil {
+		return x.Signature
+	}
+	return ""
+}
+
+func (x *ConfigItem) GetDownloadURL() []string {
+	if x != nil {
+		return x.DownloadURL
+	}
+	return nil
+}
+
+func (x *ConfigItem) GetDetail() string {
+	if x != nil {
+		return x.Detail
 	}
 	return ""
 }
@@ -260,20 +333,26 @@ const file_event_command_proto_rawDesc = "" +
 	"\n" +
 	"event_type\x18\x03 \x01(\tR\teventType\x12\x1c\n" +
 	"\ttimestamp\x18\x04 \x01(\x03R\ttimestamp\x12\x12\n" +
-	"\x04data\x18\x05 \x01(\fR\x04data\"\xbe\x01\n" +
-	"\aCommand\x12\x19\n" +
-	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x19\n" +
-	"\bevent_id\x18\x02 \x01(\tR\aeventId\x12\x1d\n" +
+	"\x04data\x18\x05 \x01(\fR\x04data\"y\n" +
+	"\aCommand\x12\x1c\n" +
+	"\tAgentCtrl\x18\x01 \x01(\x05R\tAgentCtrl\x12%\n" +
+	"\x04Task\x18\x02 \x01(\v2\x11.event.PluginTaskR\x04Task\x12)\n" +
+	"\x06Config\x18\x03 \x03(\v2\x11.event.ConfigItemR\x06Config\"f\n" +
 	"\n" +
-	"event_type\x18\x03 \x01(\tR\teventType\x12\x1c\n" +
-	"\ttimestamp\x18\x04 \x01(\x03R\ttimestamp\x12\x12\n" +
-	"\x04data\x18\x05 \x01(\fR\x04data\x12,\n" +
-	"\tfile_info\x18\x06 \x01(\v2\x0f.event.FileInfoR\bfileInfo\"g\n" +
-	"\bFileInfo\x12\x10\n" +
-	"\x03url\x18\x01 \x03(\tR\x03url\x12\x12\n" +
-	"\x04sign\x18\x02 \x01(\tR\x04sign\x12\x18\n" +
-	"\aversion\x18\x03 \x01(\tR\aversion\x12\x1b\n" +
-	"\tfile_name\x18\x04 \x01(\tR\bfileName27\n" +
+	"PluginTask\x12\x1a\n" +
+	"\bDataType\x18\x01 \x01(\x05R\bDataType\x12\x12\n" +
+	"\x04Name\x18\x02 \x01(\tR\x04Name\x12\x12\n" +
+	"\x04Data\x18\x03 \x01(\tR\x04Data\x12\x14\n" +
+	"\x05Token\x18\x04 \x01(\tR\x05Token\"\xbe\x01\n" +
+	"\n" +
+	"ConfigItem\x12\x12\n" +
+	"\x04Name\x18\x01 \x01(\tR\x04Name\x12\x12\n" +
+	"\x04Type\x18\x02 \x01(\tR\x04Type\x12\x18\n" +
+	"\aVersion\x18\x03 \x01(\tR\aVersion\x12\x16\n" +
+	"\x06SHA256\x18\x04 \x01(\tR\x06SHA256\x12\x1c\n" +
+	"\tSignature\x18\x05 \x01(\tR\tSignature\x12 \n" +
+	"\vDownloadURL\x18\x06 \x03(\tR\vDownloadURL\x12\x16\n" +
+	"\x06Detail\x18\a \x01(\tR\x06Detail27\n" +
 	"\aService\x12,\n" +
 	"\bTransfer\x12\f.event.Event\x1a\x0e.event.Command(\x010\x01B\x1eZ\x1cgithub.com/lzkking/edr/protob\x06proto3"
 
@@ -289,21 +368,23 @@ func file_event_command_proto_rawDescGZIP() []byte {
 	return file_event_command_proto_rawDescData
 }
 
-var file_event_command_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_event_command_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_event_command_proto_goTypes = []any{
-	(*Event)(nil),    // 0: event.Event
-	(*Command)(nil),  // 1: event.Command
-	(*FileInfo)(nil), // 2: event.FileInfo
+	(*Event)(nil),      // 0: event.Event
+	(*Command)(nil),    // 1: event.Command
+	(*PluginTask)(nil), // 2: event.PluginTask
+	(*ConfigItem)(nil), // 3: event.ConfigItem
 }
 var file_event_command_proto_depIdxs = []int32{
-	2, // 0: event.Command.file_info:type_name -> event.FileInfo
-	0, // 1: event.Service.Transfer:input_type -> event.Event
-	1, // 2: event.Service.Transfer:output_type -> event.Command
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: event.Command.Task:type_name -> event.PluginTask
+	3, // 1: event.Command.Config:type_name -> event.ConfigItem
+	0, // 2: event.Service.Transfer:input_type -> event.Event
+	1, // 3: event.Service.Transfer:output_type -> event.Command
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_event_command_proto_init() }
@@ -317,7 +398,7 @@ func file_event_command_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_event_command_proto_rawDesc), len(file_event_command_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
