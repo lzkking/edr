@@ -57,11 +57,11 @@ func recvData(stream pb.Service_TransferClient, ctx context.Context) {
 		case <-ctx.Done():
 			return
 		default:
-			data, err := stream.Recv()
+			_, err := stream.Recv()
 			if err != nil {
 				return
 			}
-			fmt.Println(data.AgentId)
+
 		}
 	}
 }

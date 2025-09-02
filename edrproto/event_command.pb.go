@@ -21,31 +21,35 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Event struct {
+type PackagedData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AgentId       string                 `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
-	EventId       string                 `protobuf:"bytes,2,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
-	EventType     string                 `protobuf:"bytes,3,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
-	Timestamp     int64                  `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	Data          []byte                 `protobuf:"bytes,5,opt,name=data,proto3" json:"data,omitempty"`
+	Records       []*EncodedRecord       `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
+	AgentId       string                 `protobuf:"bytes,2,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	IntranetIpv4  []string               `protobuf:"bytes,3,rep,name=intranet_ipv4,json=intranetIpv4,proto3" json:"intranet_ipv4,omitempty"`
+	ExtranetIpv4  []string               `protobuf:"bytes,4,rep,name=extranet_ipv4,json=extranetIpv4,proto3" json:"extranet_ipv4,omitempty"`
+	IntranetIpv6  []string               `protobuf:"bytes,5,rep,name=intranet_ipv6,json=intranetIpv6,proto3" json:"intranet_ipv6,omitempty"`
+	ExtranetIpv6  []string               `protobuf:"bytes,6,rep,name=extranet_ipv6,json=extranetIpv6,proto3" json:"extranet_ipv6,omitempty"`
+	Hostname      string                 `protobuf:"bytes,7,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	Version       string                 `protobuf:"bytes,8,opt,name=version,proto3" json:"version,omitempty"`
+	Product       string                 `protobuf:"bytes,9,opt,name=product,proto3" json:"product,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Event) Reset() {
-	*x = Event{}
+func (x *PackagedData) Reset() {
+	*x = PackagedData{}
 	mi := &file_event_command_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Event) String() string {
+func (x *PackagedData) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Event) ProtoMessage() {}
+func (*PackagedData) ProtoMessage() {}
 
-func (x *Event) ProtoReflect() protoreflect.Message {
+func (x *PackagedData) ProtoReflect() protoreflect.Message {
 	mi := &file_event_command_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,42 +61,234 @@ func (x *Event) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Event.ProtoReflect.Descriptor instead.
-func (*Event) Descriptor() ([]byte, []int) {
+// Deprecated: Use PackagedData.ProtoReflect.Descriptor instead.
+func (*PackagedData) Descriptor() ([]byte, []int) {
 	return file_event_command_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Event) GetAgentId() string {
+func (x *PackagedData) GetRecords() []*EncodedRecord {
+	if x != nil {
+		return x.Records
+	}
+	return nil
+}
+
+func (x *PackagedData) GetAgentId() string {
 	if x != nil {
 		return x.AgentId
 	}
 	return ""
 }
 
-func (x *Event) GetEventId() string {
+func (x *PackagedData) GetIntranetIpv4() []string {
 	if x != nil {
-		return x.EventId
+		return x.IntranetIpv4
+	}
+	return nil
+}
+
+func (x *PackagedData) GetExtranetIpv4() []string {
+	if x != nil {
+		return x.ExtranetIpv4
+	}
+	return nil
+}
+
+func (x *PackagedData) GetIntranetIpv6() []string {
+	if x != nil {
+		return x.IntranetIpv6
+	}
+	return nil
+}
+
+func (x *PackagedData) GetExtranetIpv6() []string {
+	if x != nil {
+		return x.ExtranetIpv6
+	}
+	return nil
+}
+
+func (x *PackagedData) GetHostname() string {
+	if x != nil {
+		return x.Hostname
 	}
 	return ""
 }
 
-func (x *Event) GetEventType() string {
+func (x *PackagedData) GetVersion() string {
 	if x != nil {
-		return x.EventType
+		return x.Version
 	}
 	return ""
 }
 
-func (x *Event) GetTimestamp() int64 {
+func (x *PackagedData) GetProduct() string {
+	if x != nil {
+		return x.Product
+	}
+	return ""
+}
+
+type EncodedRecord struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DataType      int32                  `protobuf:"varint,1,opt,name=data_type,json=dataType,proto3" json:"data_type,omitempty"`
+	Timestamp     int64                  `protobuf:"varint,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Data          []byte                 `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EncodedRecord) Reset() {
+	*x = EncodedRecord{}
+	mi := &file_event_command_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EncodedRecord) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EncodedRecord) ProtoMessage() {}
+
+func (x *EncodedRecord) ProtoReflect() protoreflect.Message {
+	mi := &file_event_command_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EncodedRecord.ProtoReflect.Descriptor instead.
+func (*EncodedRecord) Descriptor() ([]byte, []int) {
+	return file_event_command_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *EncodedRecord) GetDataType() int32 {
+	if x != nil {
+		return x.DataType
+	}
+	return 0
+}
+
+func (x *EncodedRecord) GetTimestamp() int64 {
 	if x != nil {
 		return x.Timestamp
 	}
 	return 0
 }
 
-func (x *Event) GetData() []byte {
+func (x *EncodedRecord) GetData() []byte {
 	if x != nil {
 		return x.Data
+	}
+	return nil
+}
+
+type Record struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DataType      int32                  `protobuf:"varint,1,opt,name=data_type,json=dataType,proto3" json:"data_type,omitempty"`
+	Timestamp     int64                  `protobuf:"varint,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Data          *Payload               `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Record) Reset() {
+	*x = Record{}
+	mi := &file_event_command_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Record) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Record) ProtoMessage() {}
+
+func (x *Record) ProtoReflect() protoreflect.Message {
+	mi := &file_event_command_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Record.ProtoReflect.Descriptor instead.
+func (*Record) Descriptor() ([]byte, []int) {
+	return file_event_command_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Record) GetDataType() int32 {
+	if x != nil {
+		return x.DataType
+	}
+	return 0
+}
+
+func (x *Record) GetTimestamp() int64 {
+	if x != nil {
+		return x.Timestamp
+	}
+	return 0
+}
+
+func (x *Record) GetData() *Payload {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+type Payload struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Fields        map[string]string      `protobuf:"bytes,1,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Payload) Reset() {
+	*x = Payload{}
+	mi := &file_event_command_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Payload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Payload) ProtoMessage() {}
+
+func (x *Payload) ProtoReflect() protoreflect.Message {
+	mi := &file_event_command_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Payload.ProtoReflect.Descriptor instead.
+func (*Payload) Descriptor() ([]byte, []int) {
+	return file_event_command_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Payload) GetFields() map[string]string {
+	if x != nil {
+		return x.Fields
 	}
 	return nil
 }
@@ -109,7 +305,7 @@ type Command struct {
 
 func (x *Command) Reset() {
 	*x = Command{}
-	mi := &file_event_command_proto_msgTypes[1]
+	mi := &file_event_command_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -121,7 +317,7 @@ func (x *Command) String() string {
 func (*Command) ProtoMessage() {}
 
 func (x *Command) ProtoReflect() protoreflect.Message {
-	mi := &file_event_command_proto_msgTypes[1]
+	mi := &file_event_command_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -134,7 +330,7 @@ func (x *Command) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Command.ProtoReflect.Descriptor instead.
 func (*Command) Descriptor() ([]byte, []int) {
-	return file_event_command_proto_rawDescGZIP(), []int{1}
+	return file_event_command_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Command) GetAgentCtrl() int32 {
@@ -174,7 +370,7 @@ type PluginTask struct {
 
 func (x *PluginTask) Reset() {
 	*x = PluginTask{}
-	mi := &file_event_command_proto_msgTypes[2]
+	mi := &file_event_command_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -186,7 +382,7 @@ func (x *PluginTask) String() string {
 func (*PluginTask) ProtoMessage() {}
 
 func (x *PluginTask) ProtoReflect() protoreflect.Message {
-	mi := &file_event_command_proto_msgTypes[2]
+	mi := &file_event_command_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -199,7 +395,7 @@ func (x *PluginTask) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PluginTask.ProtoReflect.Descriptor instead.
 func (*PluginTask) Descriptor() ([]byte, []int) {
-	return file_event_command_proto_rawDescGZIP(), []int{2}
+	return file_event_command_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *PluginTask) GetDataType() int32 {
@@ -245,7 +441,7 @@ type ConfigItem struct {
 
 func (x *ConfigItem) Reset() {
 	*x = ConfigItem{}
-	mi := &file_event_command_proto_msgTypes[3]
+	mi := &file_event_command_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -257,7 +453,7 @@ func (x *ConfigItem) String() string {
 func (*ConfigItem) ProtoMessage() {}
 
 func (x *ConfigItem) ProtoReflect() protoreflect.Message {
-	mi := &file_event_command_proto_msgTypes[3]
+	mi := &file_event_command_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -270,7 +466,7 @@ func (x *ConfigItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConfigItem.ProtoReflect.Descriptor instead.
 func (*ConfigItem) Descriptor() ([]byte, []int) {
-	return file_event_command_proto_rawDescGZIP(), []int{3}
+	return file_event_command_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ConfigItem) GetName() string {
@@ -326,14 +522,30 @@ var File_event_command_proto protoreflect.FileDescriptor
 
 const file_event_command_proto_rawDesc = "" +
 	"\n" +
-	"\x13event_command.proto\x12\x05event\"\x8e\x01\n" +
-	"\x05Event\x12\x19\n" +
-	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x19\n" +
-	"\bevent_id\x18\x02 \x01(\tR\aeventId\x12\x1d\n" +
-	"\n" +
-	"event_type\x18\x03 \x01(\tR\teventType\x12\x1c\n" +
-	"\ttimestamp\x18\x04 \x01(\x03R\ttimestamp\x12\x12\n" +
-	"\x04data\x18\x05 \x01(\fR\x04data\"y\n" +
+	"\x13event_command.proto\x12\x05event\"\xbd\x02\n" +
+	"\fPackagedData\x12.\n" +
+	"\arecords\x18\x01 \x03(\v2\x14.event.EncodedRecordR\arecords\x12\x19\n" +
+	"\bagent_id\x18\x02 \x01(\tR\aagentId\x12#\n" +
+	"\rintranet_ipv4\x18\x03 \x03(\tR\fintranetIpv4\x12#\n" +
+	"\rextranet_ipv4\x18\x04 \x03(\tR\fextranetIpv4\x12#\n" +
+	"\rintranet_ipv6\x18\x05 \x03(\tR\fintranetIpv6\x12#\n" +
+	"\rextranet_ipv6\x18\x06 \x03(\tR\fextranetIpv6\x12\x1a\n" +
+	"\bhostname\x18\a \x01(\tR\bhostname\x12\x18\n" +
+	"\aversion\x18\b \x01(\tR\aversion\x12\x18\n" +
+	"\aproduct\x18\t \x01(\tR\aproduct\"^\n" +
+	"\rEncodedRecord\x12\x1b\n" +
+	"\tdata_type\x18\x01 \x01(\x05R\bdataType\x12\x1c\n" +
+	"\ttimestamp\x18\x02 \x01(\x03R\ttimestamp\x12\x12\n" +
+	"\x04data\x18\x03 \x01(\fR\x04data\"g\n" +
+	"\x06Record\x12\x1b\n" +
+	"\tdata_type\x18\x01 \x01(\x05R\bdataType\x12\x1c\n" +
+	"\ttimestamp\x18\x02 \x01(\x03R\ttimestamp\x12\"\n" +
+	"\x04data\x18\x03 \x01(\v2\x0e.event.PayloadR\x04data\"x\n" +
+	"\aPayload\x122\n" +
+	"\x06fields\x18\x01 \x03(\v2\x1a.event.Payload.FieldsEntryR\x06fields\x1a9\n" +
+	"\vFieldsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"y\n" +
 	"\aCommand\x12\x1c\n" +
 	"\tAgentCtrl\x18\x01 \x01(\x05R\tAgentCtrl\x12%\n" +
 	"\x04Task\x18\x02 \x01(\v2\x11.event.PluginTaskR\x04Task\x12)\n" +
@@ -352,9 +564,9 @@ const file_event_command_proto_rawDesc = "" +
 	"\x06SHA256\x18\x04 \x01(\tR\x06SHA256\x12\x1c\n" +
 	"\tSignature\x18\x05 \x01(\tR\tSignature\x12 \n" +
 	"\vDownloadURL\x18\x06 \x03(\tR\vDownloadURL\x12\x16\n" +
-	"\x06Detail\x18\a \x01(\tR\x06Detail27\n" +
-	"\aService\x12,\n" +
-	"\bTransfer\x12\f.event.Event\x1a\x0e.event.Command(\x010\x01B\x1eZ\x1cgithub.com/lzkking/edr/protob\x06proto3"
+	"\x06Detail\x18\a \x01(\tR\x06Detail2>\n" +
+	"\aService\x123\n" +
+	"\bTransfer\x12\x13.event.PackagedData\x1a\x0e.event.Command(\x010\x01B\x1eZ\x1cgithub.com/lzkking/edr/protob\x06proto3"
 
 var (
 	file_event_command_proto_rawDescOnce sync.Once
@@ -368,23 +580,30 @@ func file_event_command_proto_rawDescGZIP() []byte {
 	return file_event_command_proto_rawDescData
 }
 
-var file_event_command_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_event_command_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_event_command_proto_goTypes = []any{
-	(*Event)(nil),      // 0: event.Event
-	(*Command)(nil),    // 1: event.Command
-	(*PluginTask)(nil), // 2: event.PluginTask
-	(*ConfigItem)(nil), // 3: event.ConfigItem
+	(*PackagedData)(nil),  // 0: event.PackagedData
+	(*EncodedRecord)(nil), // 1: event.EncodedRecord
+	(*Record)(nil),        // 2: event.Record
+	(*Payload)(nil),       // 3: event.Payload
+	(*Command)(nil),       // 4: event.Command
+	(*PluginTask)(nil),    // 5: event.PluginTask
+	(*ConfigItem)(nil),    // 6: event.ConfigItem
+	nil,                   // 7: event.Payload.FieldsEntry
 }
 var file_event_command_proto_depIdxs = []int32{
-	2, // 0: event.Command.Task:type_name -> event.PluginTask
-	3, // 1: event.Command.Config:type_name -> event.ConfigItem
-	0, // 2: event.Service.Transfer:input_type -> event.Event
-	1, // 3: event.Service.Transfer:output_type -> event.Command
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	1, // 0: event.PackagedData.records:type_name -> event.EncodedRecord
+	3, // 1: event.Record.data:type_name -> event.Payload
+	7, // 2: event.Payload.fields:type_name -> event.Payload.FieldsEntry
+	5, // 3: event.Command.Task:type_name -> event.PluginTask
+	6, // 4: event.Command.Config:type_name -> event.ConfigItem
+	0, // 5: event.Service.Transfer:input_type -> event.PackagedData
+	4, // 6: event.Service.Transfer:output_type -> event.Command
+	6, // [6:7] is the sub-list for method output_type
+	5, // [5:6] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_event_command_proto_init() }
@@ -398,7 +617,7 @@ func file_event_command_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_event_command_proto_rawDesc), len(file_event_command_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

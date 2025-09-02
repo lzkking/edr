@@ -26,7 +26,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServiceClient interface {
-	Transfer(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[Event, Command], error)
+	Transfer(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[PackagedData, Command], error)
 }
 
 type serviceClient struct {
@@ -37,24 +37,24 @@ func NewServiceClient(cc grpc.ClientConnInterface) ServiceClient {
 	return &serviceClient{cc}
 }
 
-func (c *serviceClient) Transfer(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[Event, Command], error) {
+func (c *serviceClient) Transfer(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[PackagedData, Command], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &Service_ServiceDesc.Streams[0], Service_Transfer_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[Event, Command]{ClientStream: stream}
+	x := &grpc.GenericClientStream[PackagedData, Command]{ClientStream: stream}
 	return x, nil
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Service_TransferClient = grpc.BidiStreamingClient[Event, Command]
+type Service_TransferClient = grpc.BidiStreamingClient[PackagedData, Command]
 
 // ServiceServer is the server API for Service service.
 // All implementations must embed UnimplementedServiceServer
 // for forward compatibility.
 type ServiceServer interface {
-	Transfer(grpc.BidiStreamingServer[Event, Command]) error
+	Transfer(grpc.BidiStreamingServer[PackagedData, Command]) error
 	mustEmbedUnimplementedServiceServer()
 }
 
@@ -65,7 +65,7 @@ type ServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedServiceServer struct{}
 
-func (UnimplementedServiceServer) Transfer(grpc.BidiStreamingServer[Event, Command]) error {
+func (UnimplementedServiceServer) Transfer(grpc.BidiStreamingServer[PackagedData, Command]) error {
 	return status.Errorf(codes.Unimplemented, "method Transfer not implemented")
 }
 func (UnimplementedServiceServer) mustEmbedUnimplementedServiceServer() {}
@@ -90,11 +90,11 @@ func RegisterServiceServer(s grpc.ServiceRegistrar, srv ServiceServer) {
 }
 
 func _Service_Transfer_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ServiceServer).Transfer(&grpc.GenericServerStream[Event, Command]{ServerStream: stream})
+	return srv.(ServiceServer).Transfer(&grpc.GenericServerStream[PackagedData, Command]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Service_TransferServer = grpc.BidiStreamingServer[Event, Command]
+type Service_TransferServer = grpc.BidiStreamingServer[PackagedData, Command]
 
 // Service_ServiceDesc is the grpc.ServiceDesc for Service service.
 // It's only intended for direct use with grpc.RegisterService,
