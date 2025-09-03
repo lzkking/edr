@@ -1,0 +1,20 @@
+basePath: /api
+host: 10.18.201.56:8989
+info:
+  contact: {}
+  description: 示例 Go + Swagger API
+  title: Example API
+  version: "1.0"
+paths:
+  /ping:
+    get:
+      description: 测试接口
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: ping 测试
+      tags:
+      - example
+swagger: "2.0"

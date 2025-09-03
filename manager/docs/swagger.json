@@ -1,0 +1,30 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "示例 Go + Swagger API",
+        "title": "Example API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "10.18.201.56:8989",
+    "basePath": "/api",
+    "paths": {
+        "/ping": {
+            "get": {
+                "description": "测试接口",
+                "tags": [
+                    "example"
+                ],
+                "summary": "ping 测试",
+                "responses": {
+                    "200": {
+                        "description": "pong",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
