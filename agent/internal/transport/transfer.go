@@ -2,10 +2,12 @@ package transport
 
 import (
 	"context"
-	"github.com/lzkking/edr/agent/agent"
-	"github.com/lzkking/edr/agent/buffer"
-	"github.com/lzkking/edr/agent/host"
+	"github.com/lzkking/edr/agent/internal/agent"
+	"github.com/lzkking/edr/agent/internal/buffer"
+	"github.com/lzkking/edr/agent/internal/host"
+	"github.com/lzkking/edr/agent/internal/plugin"
 	pb "github.com/lzkking/edr/edrproto"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"sync"
 	"time"
@@ -80,10 +82,47 @@ func handleSend(ctx context.Context, wg *sync.WaitGroup, stream pb.Service_Trans
 
 func handleReceive(ctx context.Context, wg *sync.WaitGroup, stream pb.Service_TransferClient) {
 	defer wg.Done()
+	defer zap.S().Infof("处理接收agent center数据的模块退出")
+	zap.S().Infof("开始接收并处理agent传递的命令")
 	for {
-		_, err := stream.Recv()
+		cmd, err := stream.Recv()
 		if err != nil {
+			zap.S().Error(err)
 			return
 		}
+
+		zap.S().Infof("接收到了agent center的命令")
+		if cmd.Task != nil {
+			if cmd.Task.Name == agent.Product {
+				// 处理传递给agent的命令
+				switch cmd.Task.DataType {
+				case 1999:
+					zap.S().Infof("将要关闭agent")
+					agent.Cancel()
+					zap.S().Infof("agent关闭成功")
+					return
+				}
+			} else {
+				//	处理传递给插件的命令
+
+			}
+		}
+
+		//	处理插件配置数据存在的化
+		cfgs := map[string]*pb.ConfigItem{}
+		for _, config := range cmd.Config {
+			cfgs[config.Name] = config
+		}
+
+		// 判断是否需要升级agent
+
+		//	同步插件
+		delete(cfgs, agent.Product)
+		// 同步plugin
+		err = plugin.Sync(cfgs)
+		if err != nil {
+			zap.S().Error(err)
+		}
+
 	}
 }

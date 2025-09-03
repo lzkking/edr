@@ -2,8 +2,8 @@ package heartbeat
 
 import (
 	"context"
-	"github.com/lzkking/edr/agent/buffer"
-	"github.com/lzkking/edr/agent/host"
+	"github.com/lzkking/edr/agent/internal/buffer"
+	"github.com/lzkking/edr/agent/internal/host"
 	pb "github.com/lzkking/edr/edrproto"
 	"sync"
 	"time"

@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/lzkking/edr/agent-center/config"
+	"github.com/lzkking/edr/agent/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"

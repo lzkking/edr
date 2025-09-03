@@ -5,7 +5,9 @@ import (
 	"context"
 	"errors"
 	"github.com/google/uuid"
+	"github.com/lzkking/edr/agent/config"
 	"os"
+	"path/filepath"
 )
 
 var (
@@ -37,9 +39,31 @@ func fromIDFile(file string) (id []byte, err error) {
 }
 
 func init() {
+	agentConfig := config.GetServerConfig()
+	workDir := agentConfig.WorkDir
+	if workDir == "" {
+		WorkDirectory = "/var/run"
+	} else {
+		WorkDirectory = workDir
+	}
+
+	if _, err := os.Stat(WorkDirectory); os.IsNotExist(err) {
+		err = os.MkdirAll(WorkDirectory, os.ModePerm)
+		if err != nil {
+			panic("创建工作文件夹失败")
+		}
+	}
+
 	defer func() {
-		os.WriteFile("machine-id", []byte(ID), 0600)
+		os.WriteFile(filepath.Join(WorkDirectory, "machine-id"), []byte(ID), 0600)
 	}()
+
+	mid, err := fromUUIDFile(filepath.Join(WorkDirectory, "machine-id"))
+	if err == nil {
+		ID = mid.String()
+		return
+	}
+
 	source := []byte{}
 	isid, err := fromIDFile("/var/lib/cloud/data/instance-id")
 	if err == nil {
@@ -67,7 +91,7 @@ func init() {
 		}
 		return
 	}
-	mid, err := fromUUIDFile("/etc/machine-id")
+	mid, err = fromUUIDFile("/etc/machine-id")
 	if err == nil {
 		ID = mid.String()
 		return
@@ -79,10 +103,6 @@ func init() {
 			return
 		}
 	}
-	mid, err = fromUUIDFile("machine-id")
-	if err == nil {
-		ID = mid.String()
-		return
-	}
+
 	ID = uuid.New().String()
 }
