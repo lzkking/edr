@@ -60,3 +60,47 @@ message ConfigItem{
 service Service {
   rpc Transfer(stream PackagedData) returns (stream Command);
 }
+
+//server -> bmq
+message MQData{
+  int32 DataType = 1;
+  int64 AgentTime = 2;
+  bytes Body = 3;
+
+  string AgentID = 4;
+  string IntranetIPv4 = 5;
+  string ExtranetIPv4 = 6;
+  string IntranetIPv6 = 7;
+  string ExtranetIPv6 = 8;
+  string Hostname = 9;
+  string Version = 10;
+  string Product = 11;
+
+  //Fields completed on the server
+  int64  SvrTime = 12;
+  string PSMName = 13;    //Used to identify business
+  string PSMPath = 14;    //Used to identify business
+  string Tag = 15;        //Used to identify agent group
+}
+
+//bmq --> Rule engine
+message MQRawData{
+  int32 DataType = 1;
+  int64 AgentTime = 2;
+  Payload Body = 3;
+
+  string AgentID = 4;
+  string IntranetIPv4 = 5;
+  string ExtranetIPv4 = 6;
+  string IntranetIPv6 = 7;
+  string ExtranetIPv6 = 8;
+  string Hostname = 9;
+  string Version = 10;
+  string Product = 11;
+
+  //Fields completed on the server
+  int64  SvrTime = 12;
+  string PSMName = 13;    //Used to identify business
+  string PSMPath = 14;    //Used to identify business
+  string Tags = 15;        //Used to identify agent group
+}

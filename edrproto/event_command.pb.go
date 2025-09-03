@@ -518,6 +518,322 @@ func (x *ConfigItem) GetDetail() string {
 	return ""
 }
 
+// server -> bmq
+type MQData struct {
+	state        protoimpl.MessageState `protogen:"open.v1"`
+	DataType     int32                  `protobuf:"varint,1,opt,name=DataType,proto3" json:"DataType,omitempty"`
+	AgentTime    int64                  `protobuf:"varint,2,opt,name=AgentTime,proto3" json:"AgentTime,omitempty"`
+	Body         []byte                 `protobuf:"bytes,3,opt,name=Body,proto3" json:"Body,omitempty"`
+	AgentID      string                 `protobuf:"bytes,4,opt,name=AgentID,proto3" json:"AgentID,omitempty"`
+	IntranetIPv4 string                 `protobuf:"bytes,5,opt,name=IntranetIPv4,proto3" json:"IntranetIPv4,omitempty"`
+	ExtranetIPv4 string                 `protobuf:"bytes,6,opt,name=ExtranetIPv4,proto3" json:"ExtranetIPv4,omitempty"`
+	IntranetIPv6 string                 `protobuf:"bytes,7,opt,name=IntranetIPv6,proto3" json:"IntranetIPv6,omitempty"`
+	ExtranetIPv6 string                 `protobuf:"bytes,8,opt,name=ExtranetIPv6,proto3" json:"ExtranetIPv6,omitempty"`
+	Hostname     string                 `protobuf:"bytes,9,opt,name=Hostname,proto3" json:"Hostname,omitempty"`
+	Version      string                 `protobuf:"bytes,10,opt,name=Version,proto3" json:"Version,omitempty"`
+	Product      string                 `protobuf:"bytes,11,opt,name=Product,proto3" json:"Product,omitempty"`
+	// Fields completed on the server
+	SvrTime       int64  `protobuf:"varint,12,opt,name=SvrTime,proto3" json:"SvrTime,omitempty"`
+	PSMName       string `protobuf:"bytes,13,opt,name=PSMName,proto3" json:"PSMName,omitempty"` //Used to identify business
+	PSMPath       string `protobuf:"bytes,14,opt,name=PSMPath,proto3" json:"PSMPath,omitempty"` //Used to identify business
+	Tag           string `protobuf:"bytes,15,opt,name=Tag,proto3" json:"Tag,omitempty"`         //Used to identify agent group
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MQData) Reset() {
+	*x = MQData{}
+	mi := &file_event_command_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MQData) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MQData) ProtoMessage() {}
+
+func (x *MQData) ProtoReflect() protoreflect.Message {
+	mi := &file_event_command_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MQData.ProtoReflect.Descriptor instead.
+func (*MQData) Descriptor() ([]byte, []int) {
+	return file_event_command_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *MQData) GetDataType() int32 {
+	if x != nil {
+		return x.DataType
+	}
+	return 0
+}
+
+func (x *MQData) GetAgentTime() int64 {
+	if x != nil {
+		return x.AgentTime
+	}
+	return 0
+}
+
+func (x *MQData) GetBody() []byte {
+	if x != nil {
+		return x.Body
+	}
+	return nil
+}
+
+func (x *MQData) GetAgentID() string {
+	if x != nil {
+		return x.AgentID
+	}
+	return ""
+}
+
+func (x *MQData) GetIntranetIPv4() string {
+	if x != nil {
+		return x.IntranetIPv4
+	}
+	return ""
+}
+
+func (x *MQData) GetExtranetIPv4() string {
+	if x != nil {
+		return x.ExtranetIPv4
+	}
+	return ""
+}
+
+func (x *MQData) GetIntranetIPv6() string {
+	if x != nil {
+		return x.IntranetIPv6
+	}
+	return ""
+}
+
+func (x *MQData) GetExtranetIPv6() string {
+	if x != nil {
+		return x.ExtranetIPv6
+	}
+	return ""
+}
+
+func (x *MQData) GetHostname() string {
+	if x != nil {
+		return x.Hostname
+	}
+	return ""
+}
+
+func (x *MQData) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+func (x *MQData) GetProduct() string {
+	if x != nil {
+		return x.Product
+	}
+	return ""
+}
+
+func (x *MQData) GetSvrTime() int64 {
+	if x != nil {
+		return x.SvrTime
+	}
+	return 0
+}
+
+func (x *MQData) GetPSMName() string {
+	if x != nil {
+		return x.PSMName
+	}
+	return ""
+}
+
+func (x *MQData) GetPSMPath() string {
+	if x != nil {
+		return x.PSMPath
+	}
+	return ""
+}
+
+func (x *MQData) GetTag() string {
+	if x != nil {
+		return x.Tag
+	}
+	return ""
+}
+
+// bmq --> Rule engine
+type MQRawData struct {
+	state        protoimpl.MessageState `protogen:"open.v1"`
+	DataType     int32                  `protobuf:"varint,1,opt,name=DataType,proto3" json:"DataType,omitempty"`
+	AgentTime    int64                  `protobuf:"varint,2,opt,name=AgentTime,proto3" json:"AgentTime,omitempty"`
+	Body         *Payload               `protobuf:"bytes,3,opt,name=Body,proto3" json:"Body,omitempty"`
+	AgentID      string                 `protobuf:"bytes,4,opt,name=AgentID,proto3" json:"AgentID,omitempty"`
+	IntranetIPv4 string                 `protobuf:"bytes,5,opt,name=IntranetIPv4,proto3" json:"IntranetIPv4,omitempty"`
+	ExtranetIPv4 string                 `protobuf:"bytes,6,opt,name=ExtranetIPv4,proto3" json:"ExtranetIPv4,omitempty"`
+	IntranetIPv6 string                 `protobuf:"bytes,7,opt,name=IntranetIPv6,proto3" json:"IntranetIPv6,omitempty"`
+	ExtranetIPv6 string                 `protobuf:"bytes,8,opt,name=ExtranetIPv6,proto3" json:"ExtranetIPv6,omitempty"`
+	Hostname     string                 `protobuf:"bytes,9,opt,name=Hostname,proto3" json:"Hostname,omitempty"`
+	Version      string                 `protobuf:"bytes,10,opt,name=Version,proto3" json:"Version,omitempty"`
+	Product      string                 `protobuf:"bytes,11,opt,name=Product,proto3" json:"Product,omitempty"`
+	// Fields completed on the server
+	SvrTime       int64  `protobuf:"varint,12,opt,name=SvrTime,proto3" json:"SvrTime,omitempty"`
+	PSMName       string `protobuf:"bytes,13,opt,name=PSMName,proto3" json:"PSMName,omitempty"` //Used to identify business
+	PSMPath       string `protobuf:"bytes,14,opt,name=PSMPath,proto3" json:"PSMPath,omitempty"` //Used to identify business
+	Tags          string `protobuf:"bytes,15,opt,name=Tags,proto3" json:"Tags,omitempty"`       //Used to identify agent group
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MQRawData) Reset() {
+	*x = MQRawData{}
+	mi := &file_event_command_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MQRawData) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MQRawData) ProtoMessage() {}
+
+func (x *MQRawData) ProtoReflect() protoreflect.Message {
+	mi := &file_event_command_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MQRawData.ProtoReflect.Descriptor instead.
+func (*MQRawData) Descriptor() ([]byte, []int) {
+	return file_event_command_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *MQRawData) GetDataType() int32 {
+	if x != nil {
+		return x.DataType
+	}
+	return 0
+}
+
+func (x *MQRawData) GetAgentTime() int64 {
+	if x != nil {
+		return x.AgentTime
+	}
+	return 0
+}
+
+func (x *MQRawData) GetBody() *Payload {
+	if x != nil {
+		return x.Body
+	}
+	return nil
+}
+
+func (x *MQRawData) GetAgentID() string {
+	if x != nil {
+		return x.AgentID
+	}
+	return ""
+}
+
+func (x *MQRawData) GetIntranetIPv4() string {
+	if x != nil {
+		return x.IntranetIPv4
+	}
+	return ""
+}
+
+func (x *MQRawData) GetExtranetIPv4() string {
+	if x != nil {
+		return x.ExtranetIPv4
+	}
+	return ""
+}
+
+func (x *MQRawData) GetIntranetIPv6() string {
+	if x != nil {
+		return x.IntranetIPv6
+	}
+	return ""
+}
+
+func (x *MQRawData) GetExtranetIPv6() string {
+	if x != nil {
+		return x.ExtranetIPv6
+	}
+	return ""
+}
+
+func (x *MQRawData) GetHostname() string {
+	if x != nil {
+		return x.Hostname
+	}
+	return ""
+}
+
+func (x *MQRawData) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+func (x *MQRawData) GetProduct() string {
+	if x != nil {
+		return x.Product
+	}
+	return ""
+}
+
+func (x *MQRawData) GetSvrTime() int64 {
+	if x != nil {
+		return x.SvrTime
+	}
+	return 0
+}
+
+func (x *MQRawData) GetPSMName() string {
+	if x != nil {
+		return x.PSMName
+	}
+	return ""
+}
+
+func (x *MQRawData) GetPSMPath() string {
+	if x != nil {
+		return x.PSMPath
+	}
+	return ""
+}
+
+func (x *MQRawData) GetTags() string {
+	if x != nil {
+		return x.Tags
+	}
+	return ""
+}
+
 var File_event_command_proto protoreflect.FileDescriptor
 
 const file_event_command_proto_rawDesc = "" +
@@ -564,7 +880,41 @@ const file_event_command_proto_rawDesc = "" +
 	"\x06SHA256\x18\x04 \x01(\tR\x06SHA256\x12\x1c\n" +
 	"\tSignature\x18\x05 \x01(\tR\tSignature\x12 \n" +
 	"\vDownloadURL\x18\x06 \x03(\tR\vDownloadURL\x12\x16\n" +
-	"\x06Detail\x18\a \x01(\tR\x06Detail2>\n" +
+	"\x06Detail\x18\a \x01(\tR\x06Detail\"\xb0\x03\n" +
+	"\x06MQData\x12\x1a\n" +
+	"\bDataType\x18\x01 \x01(\x05R\bDataType\x12\x1c\n" +
+	"\tAgentTime\x18\x02 \x01(\x03R\tAgentTime\x12\x12\n" +
+	"\x04Body\x18\x03 \x01(\fR\x04Body\x12\x18\n" +
+	"\aAgentID\x18\x04 \x01(\tR\aAgentID\x12\"\n" +
+	"\fIntranetIPv4\x18\x05 \x01(\tR\fIntranetIPv4\x12\"\n" +
+	"\fExtranetIPv4\x18\x06 \x01(\tR\fExtranetIPv4\x12\"\n" +
+	"\fIntranetIPv6\x18\a \x01(\tR\fIntranetIPv6\x12\"\n" +
+	"\fExtranetIPv6\x18\b \x01(\tR\fExtranetIPv6\x12\x1a\n" +
+	"\bHostname\x18\t \x01(\tR\bHostname\x12\x18\n" +
+	"\aVersion\x18\n" +
+	" \x01(\tR\aVersion\x12\x18\n" +
+	"\aProduct\x18\v \x01(\tR\aProduct\x12\x18\n" +
+	"\aSvrTime\x18\f \x01(\x03R\aSvrTime\x12\x18\n" +
+	"\aPSMName\x18\r \x01(\tR\aPSMName\x12\x18\n" +
+	"\aPSMPath\x18\x0e \x01(\tR\aPSMPath\x12\x10\n" +
+	"\x03Tag\x18\x0f \x01(\tR\x03Tag\"\xc5\x03\n" +
+	"\tMQRawData\x12\x1a\n" +
+	"\bDataType\x18\x01 \x01(\x05R\bDataType\x12\x1c\n" +
+	"\tAgentTime\x18\x02 \x01(\x03R\tAgentTime\x12\"\n" +
+	"\x04Body\x18\x03 \x01(\v2\x0e.event.PayloadR\x04Body\x12\x18\n" +
+	"\aAgentID\x18\x04 \x01(\tR\aAgentID\x12\"\n" +
+	"\fIntranetIPv4\x18\x05 \x01(\tR\fIntranetIPv4\x12\"\n" +
+	"\fExtranetIPv4\x18\x06 \x01(\tR\fExtranetIPv4\x12\"\n" +
+	"\fIntranetIPv6\x18\a \x01(\tR\fIntranetIPv6\x12\"\n" +
+	"\fExtranetIPv6\x18\b \x01(\tR\fExtranetIPv6\x12\x1a\n" +
+	"\bHostname\x18\t \x01(\tR\bHostname\x12\x18\n" +
+	"\aVersion\x18\n" +
+	" \x01(\tR\aVersion\x12\x18\n" +
+	"\aProduct\x18\v \x01(\tR\aProduct\x12\x18\n" +
+	"\aSvrTime\x18\f \x01(\x03R\aSvrTime\x12\x18\n" +
+	"\aPSMName\x18\r \x01(\tR\aPSMName\x12\x18\n" +
+	"\aPSMPath\x18\x0e \x01(\tR\aPSMPath\x12\x12\n" +
+	"\x04Tags\x18\x0f \x01(\tR\x04Tags2>\n" +
 	"\aService\x123\n" +
 	"\bTransfer\x12\x13.event.PackagedData\x1a\x0e.event.Command(\x010\x01B\x1eZ\x1cgithub.com/lzkking/edr/protob\x06proto3"
 
@@ -580,7 +930,7 @@ func file_event_command_proto_rawDescGZIP() []byte {
 	return file_event_command_proto_rawDescData
 }
 
-var file_event_command_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_event_command_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_event_command_proto_goTypes = []any{
 	(*PackagedData)(nil),  // 0: event.PackagedData
 	(*EncodedRecord)(nil), // 1: event.EncodedRecord
@@ -589,21 +939,24 @@ var file_event_command_proto_goTypes = []any{
 	(*Command)(nil),       // 4: event.Command
 	(*PluginTask)(nil),    // 5: event.PluginTask
 	(*ConfigItem)(nil),    // 6: event.ConfigItem
-	nil,                   // 7: event.Payload.FieldsEntry
+	(*MQData)(nil),        // 7: event.MQData
+	(*MQRawData)(nil),     // 8: event.MQRawData
+	nil,                   // 9: event.Payload.FieldsEntry
 }
 var file_event_command_proto_depIdxs = []int32{
 	1, // 0: event.PackagedData.records:type_name -> event.EncodedRecord
 	3, // 1: event.Record.data:type_name -> event.Payload
-	7, // 2: event.Payload.fields:type_name -> event.Payload.FieldsEntry
+	9, // 2: event.Payload.fields:type_name -> event.Payload.FieldsEntry
 	5, // 3: event.Command.Task:type_name -> event.PluginTask
 	6, // 4: event.Command.Config:type_name -> event.ConfigItem
-	0, // 5: event.Service.Transfer:input_type -> event.PackagedData
-	4, // 6: event.Service.Transfer:output_type -> event.Command
-	6, // [6:7] is the sub-list for method output_type
-	5, // [5:6] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	3, // 5: event.MQRawData.Body:type_name -> event.Payload
+	0, // 6: event.Service.Transfer:input_type -> event.PackagedData
+	4, // 7: event.Service.Transfer:output_type -> event.Command
+	7, // [7:8] is the sub-list for method output_type
+	6, // [6:7] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_event_command_proto_init() }
@@ -617,7 +970,7 @@ func file_event_command_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_event_command_proto_rawDesc), len(file_event_command_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
