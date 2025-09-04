@@ -4,4 +4,5 @@ agent/agent
 agent/.agent
 agent/machine-id
 agent-center/.agent-center
-third
+third/kafka/data
+third/mongodb/data
