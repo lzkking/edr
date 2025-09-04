@@ -25,6 +25,7 @@ import (
 const (
 	AgentCenterConfigFile = "agent-center-config.json"
 	AgentCenterLogFile    = "agent-center-log.log"
+	KafkaLogFile          = "kafka-log.log"
 )
 
 func GetServerConfigPath() string {
@@ -36,12 +37,13 @@ func GetServerConfigPath() string {
 }
 
 type AgentCenterConfig struct {
-	LogFile        string   `json:"log_file"`
-	RunMode        string   `json:"run_mode"`
-	GrpcListenPort string   `json:"grpc-listen_port"`
-	HttpListenPort string   `json:"http-listen-port"`
-	ServiceCenter  []string `json:"service_center"`
-	ConnectLimit   uint64   `json:"connect_limit"`
+	LogFile        string      `json:"log_file"`
+	RunMode        string      `json:"run_mode"`
+	GrpcListenPort string      `json:"grpc-listen_port"`
+	HttpListenPort string      `json:"http-listen-port"`
+	ServiceCenter  []string    `json:"service_center"`
+	ConnectLimit   uint64      `json:"connect_limit"`
+	KafkaConfig    KafkaConfig `json:"kafka_config"`
 }
 
 func (c *AgentCenterConfig) Save() error {
@@ -94,5 +96,16 @@ func getDefaultServerConfig() *AgentCenterConfig {
 		GrpcListenPort: "10981",
 		HttpListenPort: "10982",
 		ConnectLimit:   10,
+		KafkaConfig: KafkaConfig{
+			KafkaAdders: []string{
+				"10.18.201.56:9092",
+			},
+			Topic:      "test",
+			ClientID:   "10.18.201.56",
+			LogPath:    filepath.Join(assets.GetRootAppDir(), "log", KafkaLogFile),
+			EnableAuth: false,
+			UserName:   "",
+			Password:   "",
+		},
 	}
 }

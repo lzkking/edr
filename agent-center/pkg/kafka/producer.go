@@ -2,7 +2,9 @@ package kafka
 
 import (
 	"github.com/IBM/sarama"
+	pb "github.com/lzkking/edr/edrproto"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 	"sync"
 	"time"
 )
@@ -84,7 +86,35 @@ func newProducerWithConfig(kafkaAdders []string, topic string, config *sarama.Co
 	go func() {
 		select {
 		case success := <-producer.Successes():
-
+			mqProducerMessagePool.Put(success)
+			zap.S().Debugf("向kafka推送数成功,topic is: %v patition is: %v offset is: %v", success.Topic, success.Partition, success.Offset)
+		case err = <-producer.Errors():
+			zap.S().Errorf("向kafka推送数据失败,失败原因:%v", err)
 		}
 	}()
+
+	return &Producer{
+		Topic:    topic,
+		Producer: producer,
+	}, nil
+}
+
+func (p *Producer) SendPBWithKey(key string, msg proto.Message) {
+	defer func() {
+		MQMsgPool.Put(msg)
+	}()
+	b, err := proto.Marshal(msg)
+	if err != nil {
+		zap.S().Errorf("编码proto的消息失败,失败原因:%v,消息是:%v", err, msg)
+		return
+	}
+
+	proMsg := mqProducerMessagePool.Get().(*sarama.ProducerMessage)
+	proMsg.Topic = p.Topic
+	proMsg.Value = sarama.ByteEncoder(b)
+	proMsg.Key = sarama.StringEncoder(key)
+	proMsg.Metadata = nil
+	p.Producer.Input() <- proMsg
+
+	//	成功将消息压送到kafka
 }
