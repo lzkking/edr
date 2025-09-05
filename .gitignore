@@ -6,3 +6,5 @@ agent/machine-id
 agent-center/.agent-center
 third/kafka/data
 third/mongodb/data
+manager/manager
+manager/.manager

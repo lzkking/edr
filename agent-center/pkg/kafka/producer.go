@@ -84,12 +84,14 @@ func newProducerWithConfig(kafkaAdders []string, topic string, config *sarama.Co
 	}
 
 	go func() {
-		select {
-		case success := <-producer.Successes():
-			mqProducerMessagePool.Put(success)
-			zap.S().Debugf("向kafka推送数成功,topic is: %v patition is: %v offset is: %v", success.Topic, success.Partition, success.Offset)
-		case err = <-producer.Errors():
-			zap.S().Errorf("向kafka推送数据失败,失败原因:%v", err)
+		for {
+			select {
+			case success := <-producer.Successes():
+				mqProducerMessagePool.Put(success)
+				zap.S().Debugf("向kafka推送数成功,topic is: %v patition is: %v offset is: %v", success.Topic, success.Partition, success.Offset)
+			case err = <-producer.Errors():
+				zap.S().Errorf("向kafka推送数据失败,失败原因:%v", err)
+			}
 		}
 	}()
 
@@ -116,5 +118,5 @@ func (p *Producer) SendPBWithKey(key string, msg proto.Message) {
 	proMsg.Metadata = nil
 	p.Producer.Input() <- proMsg
 
-	//	成功将消息压送到kafka
+	zap.S().Debugf("向kafka推送数据")
 }

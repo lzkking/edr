@@ -66,7 +66,7 @@ func (t *TransferHandler) Transfer(stream pb.Service_TransferServer) error {
 	}()
 
 	//	处理第一次的连接
-	handleRawData(event)
+	handleRawData(event, &conn)
 
 	go recvData(stream, &conn)
 
@@ -87,7 +87,7 @@ func recvData(stream pb.Service_TransferServer, conn *pool.Connection) {
 			if err != nil {
 				return
 			}
-			handleRawData(data)
+			handleRawData(data, conn)
 		}
 	}
 }
@@ -117,8 +117,4 @@ func sendData(stream pb.Service_TransferServer, conn *pool.Connection) {
 			close(cmd.Ready)
 		}
 	}
-}
-
-func handleRawData(event *pb.PackagedData) {
-
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/lzkking/edr/agent/internal/buffer"
 	"github.com/lzkking/edr/agent/internal/host"
 	pb "github.com/lzkking/edr/edrproto"
+	"go.uber.org/zap"
 	"sync"
 	"time"
 )
@@ -31,7 +32,7 @@ func getAgentStat(now time.Time) {
 func StartUp(ctx context.Context, wg *sync.WaitGroup) {
 	defer wg.Done()
 	getAgentStat(time.Now())
-	ticker := time.NewTicker(time.Minute)
+	ticker := time.NewTicker(time.Second * 10)
 	defer ticker.Stop()
 	for {
 		select {
@@ -39,6 +40,7 @@ func StartUp(ctx context.Context, wg *sync.WaitGroup) {
 			return
 		case t := <-ticker.C:
 			{
+				zap.S().Infof("向agent-center发送心跳包")
 				host.RefreshHost()
 				getAgentStat(t)
 			}

@@ -1,35 +1,20 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	_ "github.com/lzkking/edr/manager/docs" // docs 包是 swag 生成的
-	"github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	"net/http"
+	"context"
+	"github.com/lzkking/edr/manager/internal/route"
+	"github.com/lzkking/edr/manager/log"
+	"go.uber.org/zap"
+	"sync"
 )
 
-// @title Example API
-// @version 1.0
-// @description 示例 Go + Swagger API
-// @host 10.18.201.56:8989
-// @BasePath /api
 func main() {
-	r := gin.Default()
+	log.Init()
+	zap.S().Infof("管理平台启动")
 
-	r.GET("/api/ping", PingHandler)
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+	route.Route(context.Background(), wg)
 
-	// Swagger UI 路由
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
-	r.Run(":8989")
-}
-
-// PingHandler godoc
-// @Summary ping 测试
-// @Description 测试接口
-// @Tags example
-// @Success 200 {string} string "pong"
-// @Router /ping [get]
-func PingHandler(c *gin.Context) {
-	c.String(http.StatusOK, "pong")
+	wg.Wait()
 }
