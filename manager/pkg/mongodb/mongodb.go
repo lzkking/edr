@@ -13,6 +13,7 @@ import (
 var (
 	once          sync.Once
 	MongodbClient *mongo.Client
+	DatabaseName  string
 )
 
 func NewMongoClient(host, user, password, authDB string, minPoolSize, maxPoolSize uint64, retryWrites, enableAuth bool) (client *mongo.Client, err error) {
@@ -58,7 +59,7 @@ func init() {
 		mongodbConfig.RetryWrites,
 		mongodbConfig.EnableAuth,
 	)
-
+	DatabaseName = mongodbConfig.DB
 	if err != nil {
 		panic("连接mongodb失败")
 	}

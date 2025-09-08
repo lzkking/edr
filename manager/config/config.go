@@ -84,6 +84,7 @@ func getDefaultServerConfig() *AgentCenterConfig {
 			User:        "root",
 			Password:    "root",
 			AuthDB:      "admin",
+			DB:          "test",
 			MinPoolSize: 5,
 			MaxPoolSize: 50,
 			RetryWrites: true,

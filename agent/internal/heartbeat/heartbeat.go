@@ -104,7 +104,7 @@ func getAgentStat(now time.Time) {
 func StartUp(ctx context.Context, wg *sync.WaitGroup) {
 	defer wg.Done()
 	getAgentStat(time.Now())
-	ticker := time.NewTicker(time.Second * 10)
+	ticker := time.NewTicker(time.Minute)
 	defer ticker.Stop()
 	for {
 		select {

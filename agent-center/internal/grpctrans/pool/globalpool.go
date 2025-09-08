@@ -2,7 +2,9 @@ package pool
 
 import (
 	"errors"
+	"github.com/k0kubun/pp/v3"
 	"github.com/lzkking/edr/agent-center/config"
+	"github.com/lzkking/edr/agent-center/internal/manager"
 	pb "github.com/lzkking/edr/edrproto"
 	"github.com/patrickmn/go-cache"
 	"go.uber.org/zap"
@@ -21,6 +23,7 @@ func NewGlobalPool() *GlobalPool {
 	g := &GlobalPool{
 		connectPool: cache.New(-1, -1),
 		tokenChan:   make(chan bool, connectLimit),
+		confChan:    make(chan string),
 	}
 
 	for i := uint64(0); i < connectLimit; i++ {
@@ -122,6 +125,27 @@ func (g *GlobalPool) checkConfig() {
 
 			//将conn的信息发往manager
 			zap.S().Infof("将%v的心跳数据发往manager", conn.AgentId)
+			agentDetail := conn.GetAgentDetail()
+			zap.S().Debugf("%v", pp.Sprintf("%v", agentDetail))
+
+			plgConfigs, err := manager.GetConfigFromManager(agentId, agentDetail)
+			if err != nil {
+				continue
+			}
+
+			if len(plgConfigs) > 0 {
+				pbCommand := &pb.Command{
+					AgentCtrl: 0,
+					Config:    plgConfigs,
+				}
+
+				err = g.PostCommand(agentId, pbCommand)
+				if err != nil {
+					zap.S().Errorf("向agent发送加载的插件的命令失败,失败的原因:%v", err)
+				}
+			} else {
+				zap.S().Infof("目前没有需要下发到agent的插件")
+			}
 		}
 	}
 }

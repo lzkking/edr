@@ -58,10 +58,10 @@ func parseAgentHeartBeat(req *pb.PackagedData, rec *pb.EncodedRecord, conn *pool
 	detail = make(map[string]interface{})
 
 	//	编码pb.PackagedData的数据
-	detail["intranet_ipv4"] = strings.Join(req.IntranetIpv4, ",")
-	detail["extranet_ipv4"] = strings.Join(req.ExtranetIpv4, ",")
-	detail["intranet_ipv6"] = strings.Join(req.IntranetIpv6, ",")
-	detail["extranet_ipv6"] = strings.Join(req.ExtranetIpv6, ",")
+	detail["intranet_ipv4"] = req.IntranetIpv4
+	detail["extranet_ipv4"] = req.ExtranetIpv4
+	detail["intranet_ipv6"] = req.IntranetIpv6
+	detail["extranet_ipv6"] = req.ExtranetIpv6
 	detail["hostname"] = req.Hostname
 	detail["version"] = req.Version
 	detail["product"] = req.Product
@@ -85,6 +85,18 @@ func parseAgentHeartBeat(req *pb.PackagedData, rec *pb.EncodedRecord, conn *pool
 	}
 
 	// 确定是否有心跳包的记录,没有的话,需要传递到manager
+	agentDetail := conn.GetAgentDetail()
+	if len(agentDetail) == 0 {
+		conn.SetAgentDetail(detail)
+		//首次传递来的心跳包,向manager传递心跳包,并从manager获取需要下发的插件信息,也就是配置信息
+		err = GlobalPool.PostLastConfig(conn.AgentId)
+		if err != nil {
+			zap.S().Errorf("向manager传递心跳信息失败，错误原因:%v", err)
+		}
+
+	} else {
+		conn.SetAgentDetail(detail)
+	}
 
 	return detail
 }

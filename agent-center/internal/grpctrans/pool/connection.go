@@ -24,3 +24,40 @@ type Command struct {
 	Error   error
 	Ready   chan bool
 }
+
+func (c *Connection) GetAgentDetail() map[string]interface{} {
+	c.agentDetailLock.RLock()
+	defer c.agentDetailLock.RUnlock()
+	if c.AgentDetail == nil {
+		return map[string]interface{}{}
+	}
+
+	return c.AgentDetail
+}
+
+func (c *Connection) SetAgentDetail(agentDetail map[string]interface{}) {
+	c.agentDetailLock.Lock()
+	defer c.agentDetailLock.Unlock()
+	c.AgentDetail = agentDetail
+}
+
+func (c *Connection) GetPlgDetail(pluginName string) map[string]interface{} {
+	c.pluginDetailLock.Lock()
+	defer c.pluginDetailLock.Unlock()
+	if c.PluginDetail == nil {
+		return map[string]interface{}{}
+	}
+
+	return c.PluginDetail[pluginName]
+}
+
+func (c *Connection) SetPlgDetail(pluginName string, detail map[string]interface{}) {
+	c.pluginDetailLock.Lock()
+	defer c.pluginDetailLock.Unlock()
+
+	if c.PluginDetail == nil {
+		c.PluginDetail = map[string]map[string]interface{}{}
+	}
+
+	c.PluginDetail[pluginName] = detail
+}
