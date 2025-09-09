@@ -8,3 +8,4 @@ third/kafka/data
 third/mongodb/data
 manager/manager
 manager/.manager
+service/service
