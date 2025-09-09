@@ -39,6 +39,7 @@ func GetServerConfigPath() string {
 type AgentCenterConfig struct {
 	LogFile        string      `json:"log_file"`
 	RunMode        string      `json:"run_mode"`
+	ServiceHosts   []string    `json:"service_hosts"`
 	GrpcListenPort string      `json:"grpc-listen_port"`
 	HttpListenPort string      `json:"http-listen-port"`
 	ServiceCenter  []string    `json:"service_center"`
@@ -91,8 +92,11 @@ func GetServerConfig() *AgentCenterConfig {
 
 func getDefaultServerConfig() *AgentCenterConfig {
 	return &AgentCenterConfig{
-		LogFile:        filepath.Join(assets.GetRootAppDir(), "log", AgentCenterLogFile),
-		RunMode:        "DEBUG",
+		LogFile: filepath.Join(assets.GetRootAppDir(), "log", AgentCenterLogFile),
+		RunMode: "DEBUG",
+		ServiceHosts: []string{
+			"10.18.201.56:10086",
+		},
 		GrpcListenPort: "10981",
 		HttpListenPort: "10982",
 		ConnectLimit:   10,

@@ -18,6 +18,7 @@ type AgentCenterConfig struct {
 	TmpFile       string        `json:"tmp_file"`
 	WorkDir       string        `json:"work_dir"`
 	ListenPort    uint16        `json:"listen_port"`
+	ServiceHosts  []string      `json:"service_hosts"`
 	MongodbConfig MongodbConfig `json:"mongodb_config"`
 }
 
@@ -89,6 +90,9 @@ func getDefaultServerConfig() *AgentCenterConfig {
 			MaxPoolSize: 50,
 			RetryWrites: true,
 			EnableAuth:  true,
+		},
+		ServiceHosts: []string{
+			"10.18.201.56:10086",
 		},
 	}
 }

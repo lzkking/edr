@@ -13,10 +13,11 @@ const (
 )
 
 type AgentCenterConfig struct {
-	LogFile string `json:"log_file"`
-	RunMode string `json:"run_mode"`
-	TmpFile string `json:"tmp_file"`
-	WorkDir string `json:"work_dir"`
+	LogFile      string   `json:"log_file"`
+	RunMode      string   `json:"run_mode"`
+	TmpFile      string   `json:"tmp_file"`
+	WorkDir      string   `json:"work_dir"`
+	ServiceHosts []string `json:"service_hosts"`
 }
 
 func GetServerConfigPath() string {
@@ -76,5 +77,8 @@ func getDefaultServerConfig() *AgentCenterConfig {
 		RunMode: "DEBUG",
 		TmpFile: filepath.Join(assets.GetAgentRootAppDir(), "tmp"),
 		WorkDir: filepath.Join(assets.GetAgentRootAppDir(), "work"),
+		ServiceHosts: []string{
+			"10.18.201.56:10086",
+		},
 	}
 }

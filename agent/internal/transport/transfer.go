@@ -6,9 +6,9 @@ import (
 	"github.com/lzkking/edr/agent/internal/buffer"
 	"github.com/lzkking/edr/agent/internal/host"
 	"github.com/lzkking/edr/agent/internal/plugin"
+	"github.com/lzkking/edr/agent/internal/transport/connection"
 	pb "github.com/lzkking/edr/edrproto"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 	"sync"
 	"time"
 )
@@ -20,7 +20,7 @@ func startTransfer(ctx context.Context, wg *sync.WaitGroup) {
 	defer subWg.Wait()
 
 	//	连接agent-center
-	conn, err := grpc.Dial("localhost:10981", grpc.WithInsecure())
+	conn, err := connection.GetConnection(ctx)
 	if err != nil {
 		return
 	}

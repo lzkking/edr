@@ -118,6 +118,7 @@ func (b *bucket) SetRegisterInfo(name string, registerInfo RegisterInfo) {
 		v.Weight = registerInfo.Weight
 		v.UpdateAt = time.Now().Unix()
 		v.Status = StatusGreen
+		b.data[name] = v
 	} else {
 		b.data[name] = RegisterInfo{
 			Name:     registerInfo.Name,
@@ -141,6 +142,7 @@ func (b *bucket) GetGreenHosts() []string {
 	var host string
 	for _, register := range b.data {
 		if register.Status == StatusGreen {
+			zap.S().Debugf("register info : %v, %v", register.Name, register.Weight)
 			if minWeight > register.Weight {
 				minWeight = register.Weight
 				host = fmt.Sprintf("%v:%v", register.Ip, register.Port)
@@ -210,6 +212,7 @@ func (ei *Endpoint) Refresh() {
 				redRegisters := b.RefreshStatus()
 				if len(redRegisters) > 0 {
 					for _, r := range redRegisters {
+						zap.S().Debugf("redRegister info :%v", r.Name)
 						ei.Delete(r)
 					}
 				}
