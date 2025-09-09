@@ -2,6 +2,9 @@ package endpoint
 
 import (
 	"errors"
+	"fmt"
+	"github.com/levigross/grequests"
+	"github.com/lzkking/edr/service/config"
 	"github.com/lzkking/edr/service/internal/cluster"
 	"go.uber.org/zap"
 	"sync"
@@ -21,15 +24,40 @@ const (
 	defaultSendTime       = 2
 	defaultRecvTime       = 10
 
+	defaultSyncTimeout = 2
+
 	defaultMergeNum = 400
 )
 
+const (
+	StatusGreen = iota
+	StatusBlue
+	StatusYellow
+	StatusOrange
+	StatusRed
+)
+
+var (
+	defaultWeight = uint32(400)
+)
+
+const (
+	syncUrl = "http://%s/service/sync"
+)
+
+var (
+	EI *Endpoint
+)
+
 type RegisterInfo struct {
-	Name   string `json:"name"`
-	Ip     string `json:"ip"`
-	Port   uint32 `json:"port"`
-	Weight uint32 `json:"weight"`
-	Type   int    `json:"type"`
+	Name     string `json:"name"`
+	Ip       string `json:"ip"`
+	Port     uint32 `json:"port"`
+	Weight   uint32 `json:"weight"`
+	Status   int    `json:"status"`    // 当前状态
+	CreateAt int64  `json:"create_at"` // 创建的时间
+	UpdateAt int64  `json:"update_at"` // 更新的时间
+	Type     int    `json:"type"`
 }
 
 type SyncInfo struct {
@@ -47,6 +75,32 @@ type bucket struct {
 	data map[string]RegisterInfo
 }
 
+func (b *bucket) RefreshStatus() []RegisterInfo {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	var redRegister []RegisterInfo
+
+	for name, registerInfo := range b.data {
+		d := time.Now().Unix() - registerInfo.UpdateAt
+		if d <= 45 {
+			registerInfo.Status = StatusGreen
+		} else if d <= 60 {
+			registerInfo.Status = StatusBlue
+		} else if d <= 75 {
+			registerInfo.Status = StatusYellow
+		} else if d <= 90 {
+			registerInfo.Status = StatusOrange
+		} else {
+			registerInfo.Status = StatusRed
+			redRegister = append(redRegister, registerInfo)
+		}
+		b.data[name] = registerInfo
+	}
+
+	return redRegister
+}
+
 func (b *bucket) GetRegisterInfo(name string) RegisterInfo {
 	b.mu.RLock()
 	defer b.mu.RUnlock()
@@ -60,7 +114,49 @@ func (b *bucket) GetRegisterInfo(name string) RegisterInfo {
 func (b *bucket) SetRegisterInfo(name string, registerInfo RegisterInfo) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	b.data[name] = registerInfo
+	if v, ok := b.data[name]; ok {
+		v.Weight = registerInfo.Weight
+		v.UpdateAt = time.Now().Unix()
+		v.Status = StatusGreen
+	} else {
+		b.data[name] = RegisterInfo{
+			Name:     registerInfo.Name,
+			Ip:       registerInfo.Ip,
+			Port:     registerInfo.Port,
+			Weight:   registerInfo.Weight,
+			CreateAt: time.Now().Unix(),
+			UpdateAt: time.Now().Unix(),
+			Type:     registerInfo.Type,
+			Status:   StatusGreen,
+		}
+	}
+}
+
+func (b *bucket) GetGreenHosts() []string {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	var hosts []string
+
+	minWeight := uint32(10000)
+	var host string
+	for _, register := range b.data {
+		if register.Status == StatusGreen {
+			if minWeight > register.Weight {
+				minWeight = register.Weight
+				host = fmt.Sprintf("%v:%v", register.Ip, register.Port)
+			}
+
+			if register.Weight < defaultWeight {
+				hosts = append(hosts, fmt.Sprintf("%v:%v", register.Ip, register.Port))
+			}
+		}
+	}
+
+	if len(hosts) == 0 && host != "" {
+		hosts = append(hosts, host)
+	}
+
+	return hosts
 }
 
 func (b *bucket) DeleteRegisterInfo(name string) {
@@ -88,7 +184,41 @@ func NewEndpoint() *Endpoint {
 		Stop:     make(chan bool),
 	}
 
+	// 将信息同步给其他注册中心
+	go endpoint.SyncSend()
+
+	// 接收其他注册中心传递来的同步信息
+	go endpoint.SyncRecv()
+
+	// 刷新保存的注册者的状态信息
+	go endpoint.Refresh()
+
 	return endpoint
+}
+
+func (ei *Endpoint) Close() {
+	close(ei.Stop)
+}
+
+func (ei *Endpoint) Refresh() {
+	ticker := time.NewTicker(time.Second * 5)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ticker.C:
+			for _, b := range ei.buckets {
+				redRegisters := b.RefreshStatus()
+				if len(redRegisters) > 0 {
+					for _, r := range redRegisters {
+						ei.Delete(r)
+					}
+				}
+			}
+		case <-ei.Stop:
+			zap.S().Warnf("endpoint refresh退出")
+			return
+		}
+	}
 }
 
 func (ei *Endpoint) SyncSend() {
@@ -133,6 +263,7 @@ func (ei *Endpoint) SyncSend() {
 
 				wg.Wait()
 				syncInfoList = make([]SyncInfo, 0)
+				zap.S().Debugf("同步完成")
 			}
 		case <-ei.Stop:
 			zap.S().Warnf("endpoint sync send 退出")
@@ -145,6 +276,16 @@ func send(wg *sync.WaitGroup, host string, transInfo TransInfo) {
 	defer wg.Done()
 
 	//将数据同步到其他注册中心
+	zap.S().Debugf("将数据同步到其他注册中心")
+	url := fmt.Sprintf(syncUrl, host)
+	option := &grequests.RequestOptions{}
+	option.JSON = transInfo
+	option.RequestTimeout = defaultSyncTimeout * time.Second
+	_, err := grequests.Post(url, option)
+	if err != nil {
+		zap.S().Warnf("同步信息到其他注册中心失败")
+	}
+	return
 }
 
 func (ei *Endpoint) SyncRecv() {
@@ -191,14 +332,6 @@ func (ei *Endpoint) Register(registerInfo RegisterInfo) {
 		return
 	}
 
-	tmpRegisterInfo := ei.buckets[registerInfo.Type].GetRegisterInfo(registerInfo.Name)
-	if tmpRegisterInfo.Name == registerInfo.Name &&
-		tmpRegisterInfo.Ip == registerInfo.Ip &&
-		tmpRegisterInfo.Port == registerInfo.Port &&
-		tmpRegisterInfo.Weight == registerInfo.Weight {
-		return
-	}
-
 	ei.buckets[registerInfo.Type].SetRegisterInfo(registerInfo.Name, registerInfo)
 	// 将信息同步给其他
 
@@ -219,6 +352,8 @@ func (ei *Endpoint) Delete(registerInfo RegisterInfo) {
 		return
 	}
 
+	zap.S().Debugf("注册者下线")
+
 	ei.buckets[registerInfo.Type].DeleteRegisterInfo(registerInfo.Name)
 
 	syncInfo := SyncInfo{
@@ -231,4 +366,16 @@ func (ei *Endpoint) Delete(registerInfo RegisterInfo) {
 	default:
 		zap.S().Warnf("endpoint未能成功将数据进行同步")
 	}
+}
+
+func (ei *Endpoint) GetGreenHosts(Type int) []string {
+	if v, ok := ei.buckets[Type]; ok {
+		return v.GetGreenHosts()
+	}
+	return []string{}
+}
+
+func init() {
+	EI = NewEndpoint()
+	defaultWeight = config.GetServerConfig().Weight
 }

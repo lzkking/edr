@@ -13,9 +13,11 @@ const (
 )
 
 type AgentCenterConfig struct {
-	LogFile    string `json:"log_file"`
-	RunMode    string `json:"run_mode"`
-	ListenPort uint16 `json:"listen_port"`
+	LogFile    string   `json:"log_file"`
+	RunMode    string   `json:"run_mode"`
+	ListenPort uint16   `json:"listen_port"`
+	Hosts      []string `json:"hosts"`
+	Weight     uint32   `json:"weight"`
 }
 
 func GetServerConfigPath() string {
@@ -74,5 +76,7 @@ func getDefaultServerConfig() *AgentCenterConfig {
 		LogFile:    filepath.Join(assets.GetAgentRootAppDir(), "log", ServiceLogFile),
 		RunMode:    "DEBUG",
 		ListenPort: 10086,
+		Hosts:      []string{},
+		Weight:     400,
 	}
 }

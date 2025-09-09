@@ -7,6 +7,7 @@ import (
 	"github.com/lzkking/edr/service/config"
 	"github.com/lzkking/edr/service/internal/handler/agent_center"
 	"github.com/lzkking/edr/service/internal/handler/manager"
+	"github.com/lzkking/edr/service/internal/handler/service"
 	"net/http"
 	"sync"
 )
@@ -17,13 +18,6 @@ func StartUp(ctx context.Context, wg *sync.WaitGroup) {
 	listenPort := config.GetServerConfig().ListenPort
 	r := gin.Default()
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-
-	})
-
 	registerGroup := r.Group("/register")
 	{
 		registerGroup.POST("/agent-center-grpc", agent_center.AgentCenterGrpcRegister)
@@ -33,9 +27,19 @@ func StartUp(ctx context.Context, wg *sync.WaitGroup) {
 
 	listGroup := r.Group("/list")
 	{
-		listGroup.POST("/agent-center-grpc", agent_center.ListAgentCenterGrpc)
-		listGroup.POST("/agent-center-http", agent_center.ListAgentCenterHttp)
-		listGroup.POST("/manager", manager.ListManager)
+		listGroup.GET("/agent-center-grpc", agent_center.ListAgentCenterGrpc)
+		listGroup.GET("/agent-center-http", agent_center.ListAgentCenterHttp)
+		listGroup.GET("/manager", manager.ListManager)
+	}
+
+	serviceGroup := r.Group("/service")
+	{
+		serviceGroup.GET("/ping", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{
+				"message": "pong",
+			})
+		})
+		serviceGroup.POST("sync", service.SyncInfo)
 	}
 
 	if err := r.Run(fmt.Sprintf(":%v", listenPort)); err != nil {
