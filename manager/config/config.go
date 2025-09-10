@@ -20,6 +20,7 @@ type AgentCenterConfig struct {
 	ListenPort    uint16        `json:"listen_port"`
 	ServiceHosts  []string      `json:"service_hosts"`
 	MongodbConfig MongodbConfig `json:"mongodb_config"`
+	S3Config      S3Config      `json:"s3_config"`
 }
 
 func GetServerConfigPath() string {
@@ -93,6 +94,13 @@ func getDefaultServerConfig() *AgentCenterConfig {
 		},
 		ServiceHosts: []string{
 			"10.18.201.56:10086",
+		},
+		S3Config: S3Config{
+			S3Bucket:    "test",
+			S3AccessKey: "admin",
+			S3SecretKey: "admin123",
+			S3Region:    "us-east-1",
+			S3Endpoint:  "http://10.18.201.56:9000",
 		},
 	}
 }

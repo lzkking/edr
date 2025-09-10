@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lzkking/edr/manager/config"
 	"github.com/lzkking/edr/manager/internal/handler/agentcenter"
+	"github.com/lzkking/edr/manager/internal/handler/manager/plugins"
 	"go.uber.org/zap"
 	"sync"
 )
@@ -21,6 +22,11 @@ func Route(ctx context.Context, wg *sync.WaitGroup) {
 	agentCenter := r.Group("agent-center")
 	{
 		agentCenter.POST("get-agent-config", agentcenter.GetAgentConfig)
+	}
+
+	manager := r.Group("manager")
+	{
+		manager.POST("upload-plugin", plugins.UploadPlugin)
 	}
 
 	r.Run(fmt.Sprintf(":%d", listenPort))

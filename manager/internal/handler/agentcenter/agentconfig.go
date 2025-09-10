@@ -3,7 +3,7 @@ package agentcenter
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/k0kubun/pp/v3"
-	"github.com/lzkking/edr/manager/internal/handler/manager"
+	"github.com/lzkking/edr/manager/internal/handler/manager/plugins"
 	"github.com/lzkking/edr/manager/pkg/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -109,14 +109,14 @@ func GetAgentConfig(c *gin.Context) {
 	}
 
 	//从数据库中读取插件配置信息,并将数据返回
-	plgConfigs, err := manager.GetPlgConfigs(c)
+	plgConfigs, err := plugins.GetPlgConfigs(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "从数据库中获取插件配置数据失败"})
 		return
 	}
 
 	if len(plgConfigs) > 0 {
-		c.JSON(http.StatusOK, []manager.PlgConfig{})
+		c.JSON(http.StatusOK, []plugins.PlgConfig{})
 	} else {
 		c.JSON(http.StatusOK, plgConfigs)
 	}

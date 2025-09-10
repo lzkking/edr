@@ -1,4 +1,4 @@
-package manager
+package plugins
 
 import (
 	"context"
@@ -16,6 +16,7 @@ type PlgConfig struct {
 	Signature    string   `bson:"signature" json:"signature"`
 	DownloadUrls []string `bson:"download_urls" json:"download_urls"`
 	Detail       string   `bson:"detail" json:"detail"`
+	Key          string   `bson:"key"`
 }
 
 func GetPlgConfigs(ctx context.Context) ([]PlgConfig, error) {
