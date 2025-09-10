@@ -1,4 +1,4 @@
-module github.com/lzkking/edr/plugins
+module github.com/lzkking/edr/plugins/lib
 
 go 1.24.6
 
