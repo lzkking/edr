@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/lzkking/edr/manager/pkg/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.uber.org/zap"
 )
 
 const PlgConfigCollection = "plg_configs"
@@ -32,5 +33,6 @@ func GetPlgConfigs(ctx context.Context) ([]PlgConfig, error) {
 	if err = cur.All(ctx, &plgConfigs); err != nil {
 		return nil, err
 	}
+	zap.S().Debugf("plgConfigs is %v", plgConfigs)
 	return plgConfigs, nil
 }

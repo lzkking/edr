@@ -1,0 +1,4 @@
+github.com/lzkking/edr/plugins/lib v0.0.0-20250910070908-a8cab0e6f1aa h1:Rq2/0oIHUebHC09piArPojAuiQxyJ4siZ49e6vOlavc=
+github.com/lzkking/edr/plugins/lib v0.0.0-20250910070908-a8cab0e6f1aa/go.mod h1:z8veTyDk+L5MCQNlLC89o86GCs9fbH8a9kGzs1kKyIk=
+google.golang.org/protobuf v1.36.8 h1:xHScyCOEuuwZEc6UtSOvPbAT4zRh0xcNRYekJwfqyMc=
+google.golang.org/protobuf v1.36.8/go.mod h1:fuxRtAxBytpl4zzqUh6/eyUujkJdNiuEkXntxiD/uRU=

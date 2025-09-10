@@ -10,3 +10,4 @@ manager/manager
 manager/.manager
 service/.service
 service/service
+plugins/collect/collect

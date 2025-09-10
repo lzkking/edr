@@ -116,8 +116,8 @@ func GetAgentConfig(c *gin.Context) {
 	}
 
 	if len(plgConfigs) > 0 {
-		c.JSON(http.StatusOK, []plugins.PlgConfig{})
-	} else {
 		c.JSON(http.StatusOK, plgConfigs)
+	} else {
+		c.JSON(http.StatusOK, []plugins.PlgConfig{})
 	}
 }
