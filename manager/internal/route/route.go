@@ -7,6 +7,7 @@ import (
 	"github.com/lzkking/edr/manager/config"
 	"github.com/lzkking/edr/manager/internal/handler/agentcenter"
 	"github.com/lzkking/edr/manager/internal/handler/manager/plugins"
+	"github.com/lzkking/edr/manager/internal/handler/thf/collect"
 	"go.uber.org/zap"
 	"sync"
 )
@@ -27,6 +28,11 @@ func Route(ctx context.Context, wg *sync.WaitGroup) {
 	manager := r.Group("manager")
 	{
 		manager.POST("upload-plugin", plugins.UploadPlugin)
+	}
+
+	thf := r.Group("thf")
+	{
+		thf.POST("collect", collect.DealCollectData)
 	}
 
 	r.Run(fmt.Sprintf(":%d", listenPort))
