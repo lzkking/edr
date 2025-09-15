@@ -11,3 +11,5 @@ manager/.manager
 service/.service
 service/service
 plugins/collect/collect
+thf/.thf
+thf/thf
