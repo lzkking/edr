@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"github.com/k0kubun/pp"
 	"github.com/lzkking/edr/agent/internal/agent"
 	"github.com/lzkking/edr/agent/internal/buffer"
 	"github.com/lzkking/edr/agent/utils"
@@ -163,8 +164,10 @@ func Load(ctx context.Context, config pb.ConfigItem) (plg *Plugin, err error) {
 		defer plg.wg.Done()
 		defer plg.Info("gorountine of waiting plugin's process will exit")
 		for {
+			zap.S().Debugf("接收插件数据")
 			rec, err := plg.ReceiveData()
 			if err != nil {
+				zap.S().Debugf("接收插件数据失败")
 				if errors.Is(err, bufio.ErrBufferFull) {
 					plg.Warn("when receiving data, buffer is full, skip this record")
 					continue
@@ -174,6 +177,7 @@ func Load(ctx context.Context, config pb.ConfigItem) (plg *Plugin, err error) {
 					break
 				}
 			}
+			zap.S().Debugf("%v", pp.Sprintf("%v", rec))
 
 			buffer.WriteEncodedRecord(rec)
 		}

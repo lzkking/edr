@@ -46,6 +46,8 @@ func handleRawData(event *pb.PackagedData, conn *pool.Connection) {
 			zap.S().Infof("接收agent插件的心跳包")
 		case 2027:
 			zap.S().Infof("接收到收集任务")
+		case 7310:
+			zap.S().Debugf("接收到收集用户信息数据")
 		}
 		kafka.KafkaProducer.SendPBWithKey(agentId, mqMsg)
 

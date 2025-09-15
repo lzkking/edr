@@ -9,10 +9,14 @@ require (
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/jaypipes/ghw v0.19.1 // indirect
 	github.com/jaypipes/pcidb v1.1.1 // indirect
+	github.com/k0kubun/pp v3.0.1+incompatible // indirect
+	github.com/k0kubun/pp/v3 v3.5.0 // indirect
 	github.com/levigross/grequests v0.0.0-20190908174114-253788527a1a // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
 	github.com/lzkking/edr/edrproto v0.0.0-20250903090545-1401c92683c3 // indirect
 	github.com/lzkking/edr/proto v0.0.0-20250825070834-583633b1b66a // indirect
+	github.com/mattn/go-colorable v0.1.14 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/shirou/gopsutil/v3 v3.24.5 // indirect
