@@ -34,7 +34,7 @@ type Plugin struct {
 	updateTime time.Time
 	reader     *bufio.Reader
 	tx         io.WriteCloser
-	taskCh     chan pb.PluginTask
+	taskCh     chan *pb.PluginTask
 	done       chan struct{}
 	wg         *sync.WaitGroup
 	shutdown   bool
@@ -129,7 +129,7 @@ func (p *Plugin) ReceiveData() (rec *pb.EncodedRecord, err error) {
 	return
 }
 
-func (p *Plugin) SendTask(task pb.PluginTask) (err error) {
+func (p *Plugin) SendTask(task *pb.PluginTask) (err error) {
 	select {
 	case p.taskCh <- task:
 	default:
@@ -160,6 +160,7 @@ func GetAll() (plgs []*Plugin) {
 }
 
 func Sync(cfgs map[string]*pb.ConfigItem) (err error) {
+	zap.S().Debugf("同步插件数据")
 	select {
 	case syncCh <- cfgs:
 	default:

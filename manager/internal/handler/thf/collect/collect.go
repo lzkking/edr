@@ -28,6 +28,12 @@ func DealCollectData(c *gin.Context) {
 	switch collectData.DataType {
 	case 7310:
 		err = DealUserInfoData(c, &collectData)
+	case 7311:
+		err = DealPortData(c, &collectData)
+	case 7312:
+		err = DealProcessData(c, &collectData)
+	case 7313:
+		err = DealSoftwareData(c, &collectData)
 	default:
 		err = errors.New("未知data type")
 	}

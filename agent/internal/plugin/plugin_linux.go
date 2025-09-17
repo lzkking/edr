@@ -136,7 +136,7 @@ func Load(ctx context.Context, config pb.ConfigItem) (plg *Plugin, err error) {
 		reader:        bufio.NewReaderSize(rx_r, 1024*128),
 		tx:            tx_w,
 		done:          make(chan struct{}),
-		taskCh:        make(chan pb.PluginTask),
+		taskCh:        make(chan *pb.PluginTask),
 		wg:            &sync.WaitGroup{},
 		SugaredLogger: logger,
 	}
@@ -167,7 +167,7 @@ func Load(ctx context.Context, config pb.ConfigItem) (plg *Plugin, err error) {
 			zap.S().Debugf("接收插件数据")
 			rec, err := plg.ReceiveData()
 			if err != nil {
-				zap.S().Debugf("接收插件数据失败")
+				zap.S().Debugf("接收插件数据失败,失败原因:%v", err)
 				if errors.Is(err, bufio.ErrBufferFull) {
 					plg.Warn("when receiving data, buffer is full, skip this record")
 					continue
@@ -192,7 +192,8 @@ func Load(ctx context.Context, config pb.ConfigItem) (plg *Plugin, err error) {
 			case <-plg.done:
 				return
 			case task := <-plg.taskCh:
-				data, err := proto.Marshal(&task)
+				data, err := proto.Marshal(task)
+				zap.S().Debugf("%v", data)
 				if err != nil {
 					plg.Errorf("when marshaling a task, an error occurred: %v, ignored this task: %+v", err, task)
 					continue
@@ -200,12 +201,13 @@ func Load(ctx context.Context, config pb.ConfigItem) (plg *Plugin, err error) {
 				var dst = make([]byte, 4+len(data))
 				copy(dst[4:], data)
 
-				s := proto.Size(&task)
+				s := proto.Size(task)
 
 				binary.LittleEndian.PutUint32(dst[:4], uint32(s))
 				var n int
 				n, err = plg.tx.Write(dst)
 				if err != nil {
+					zap.S().Debugf("发送数据到插件失败，失败原因:%v", err)
 					if !errors.Is(err, os.ErrClosed) {
 						plg.Error("when sending task, an error occurred: ", err)
 					}

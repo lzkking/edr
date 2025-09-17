@@ -104,7 +104,16 @@ func handleReceive(ctx context.Context, wg *sync.WaitGroup, stream pb.Service_Tr
 				}
 			} else {
 				//	处理传递给插件的命令
+				plg, ok := plugin.Get(cmd.Task.Name)
+				if !ok || plg == nil {
+					zap.S().Errorf("没有指定的插件")
+					continue
+				}
 
+				err = plg.SendTask(cmd.Task)
+				if err != nil {
+					plg.Errorf("向插件发送控制命令失败")
+				}
 			}
 		}
 
@@ -118,10 +127,14 @@ func handleReceive(ctx context.Context, wg *sync.WaitGroup, stream pb.Service_Tr
 
 		//	同步插件
 		delete(cfgs, agent.Product)
-		// 同步plugin
-		err = plugin.Sync(cfgs)
-		if err != nil {
-			zap.S().Error(err)
+
+		//	判断是否有需要同步的插件数据
+		if len(cfgs) > 0 {
+			// 同步plugin
+			err = plugin.Sync(cfgs)
+			if err != nil {
+				zap.S().Error(err)
+			}
 		}
 
 	}
