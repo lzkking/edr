@@ -3,6 +3,7 @@ package user
 import (
 	_ "embed"
 	"fmt"
+	"github.com/lzkking/edr/plugins/collect/engine"
 
 	"bufio"
 	"bytes"
@@ -32,7 +33,7 @@ func (*UserHandler) DataType() int {
 	return 7310
 }
 
-func (h *UserHandler) Handle(c *plugins.Client, seq string) {
+func (h *UserHandler) Handle(c *plugins.Client, cache *engine.Cache, seq string) {
 	//	从/etc/passwd中获取Username、Uid、Gid、Info、Home、Shell
 	fmt.Println("采集用户信息数据")
 	f, err := os.Open("/etc/passwd")

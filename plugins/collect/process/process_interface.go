@@ -1,6 +1,7 @@
 package process
 
 import (
+	"github.com/lzkking/edr/plugins/collect/engine"
 	plugins "github.com/lzkking/edr/plugins/lib"
 	"github.com/mitchellh/mapstructure"
 	"time"
@@ -16,7 +17,7 @@ func (h *ProcessHandler) DataType() int {
 	return 7312
 }
 
-func (h *ProcessHandler) Handle(c *plugins.Client, seq string) {
+func (h *ProcessHandler) Handle(c *plugins.Client, cache *engine.Cache, seq string) {
 	procs, err := Processes(false)
 	if err != nil {
 		return
@@ -53,6 +54,10 @@ func (h *ProcessHandler) Handle(c *plugins.Client, seq string) {
 			mapstructure.Decode(status, &rec.Data.Fields)
 			mapstructure.Decode(ns, &rec.Data.Fields)
 			//缺少对容器进程的映射
+			m, _ := cache.Get(7314, ns.Pid)
+			rec.Data.Fields["container_id"] = m["container_id"]
+			rec.Data.Fields["container_name"] = m["container_name"]
+			rec.Data.Fields["integrity"] = "true"
 
 			rec.Data.Fields["package_seq"] = seq
 

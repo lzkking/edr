@@ -5,6 +5,7 @@ import (
 	"errors"
 	mapset "github.com/deckarep/golang-set"
 	"github.com/karrick/godirwalk"
+	"github.com/lzkking/edr/plugins/collect/engine"
 	"github.com/lzkking/edr/plugins/collect/process"
 	"github.com/lzkking/edr/plugins/collect/rpm"
 	"github.com/lzkking/edr/plugins/collect/zip"
@@ -36,7 +37,7 @@ func (h *SoftwareHandler) DataType() int {
 	return 7313
 }
 
-func (h *SoftwareHandler) Handle(c *plugins.Client, seq string) {
+func (h *SoftwareHandler) Handle(c *plugins.Client, cache *engine.Cache, seq string) {
 	// scan dpkg
 	if f, err := os.Open("/var/lib/dpkg/status"); err == nil {
 		s := bufio.NewScanner(io.LimitReader(f, 25*1024*1024))
