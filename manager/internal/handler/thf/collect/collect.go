@@ -34,6 +34,22 @@ func DealCollectData(c *gin.Context) {
 		err = DealProcessData(c, &collectData)
 	case 7313:
 		err = DealSoftwareData(c, &collectData)
+	case 7314:
+		err = DealContainerData(c, &collectData)
+	case 7315:
+		err = DealCronData(c, &collectData)
+	case 7316:
+		err = DealServiceData(c, &collectData)
+	case 7317:
+		err = DealIntegrityData(c, &collectData)
+	case 7318:
+		err = DealNetInterfaceData(c, &collectData)
+	case 7319:
+		err = DealVolumeData(c, &collectData)
+	case 7320:
+		err = DealKmodData(c, &collectData)
+	case 7321:
+		err = DealAppData(c, &collectData)
 	default:
 		err = errors.New("未知data type")
 	}

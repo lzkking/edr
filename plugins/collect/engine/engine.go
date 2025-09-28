@@ -38,6 +38,7 @@ func NewCache() *Cache {
 }
 
 // don't modify returned map
+
 func (c *Cache) Get(dt int, key string) (map[string]string, bool) {
 	c.mu.RLock()
 	res, ok := c.m[dt][key]
@@ -83,7 +84,7 @@ func (h *handler) Handle(c *plugins.Client, cache *Cache) {
 		binary.Write(f, binary.LittleEndian, time.Now().UnixNano())
 		seq := hex.EncodeToString(f.Sum(nil))
 		h.l.Infof("do work")
-
+		cache.clear(h.DataType())
 		h.Handler.Handle(c, cache, seq)
 	default:
 		//在此处阻塞等待
@@ -140,7 +141,7 @@ func (e *Engine) Run() {
 			}
 
 			h.l.Infof("init call will after %d secs\n", r)
-			time.Sleep(time.Second * time.Duration(r))
+			//time.Sleep(time.Second * time.Duration(r))
 			h.l.Info("init call")
 
 			h.Handle(e.c, e.cache)
@@ -212,5 +213,9 @@ func NewEngine(c *plugins.Client, l cron.Logger) *Engine {
 		m: make(map[int]*handler),
 		s: cron.New(cron.WithChain(cron.SkipIfStillRunning(l)), cron.WithLogger(l)),
 		c: c,
+		cache: &Cache{
+			m:  map[int]Records{},
+			mu: &sync.RWMutex{},
+		},
 	}
 }

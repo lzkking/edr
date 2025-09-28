@@ -49,8 +49,8 @@ func main() {
 	e := engine.NewEngine(plgClient, zapr.NewLogger(l))
 
 	e.AddHandler(time.Hour*6, &user.UserHandler{})                   // 采集用户信息
-	e.AddHandler(time.Hour, &process.ProcessHandler{})               // 采集进程信息
 	e.AddHandler(time.Hour, &port.PortHandler{})                     // 采集端口的数据
+	e.AddHandler(time.Hour, &process.ProcessHandler{})               // 采集进程信息
 	e.AddHandler(engine.BeforeDawn(), &software.SoftwareHandler{})   // 采集软件信息
 	e.AddHandler(time.Minute*5, &container.ContainerHandler{})       // 采集容器信息
 	e.AddHandler(time.Hour*6, &cron.CronHandler{})                   // 获取定时任务信息
